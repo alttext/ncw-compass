@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NCW Compass</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     :root {
       --green: #2d7a4f;
@@ -129,16 +130,13 @@
       color: #aaa; border-top: 1px solid var(--border); margin-top: 2rem;
     }
 
-    /* ── Suggest strip ── */
-    .suggest-strip {
-      background: #f2f2f2; border-bottom: 1px solid var(--border);
-      display: flex; justify-content: center; padding: 0.55rem;
-    }
+    /* ── Suggest button ── */
     .suggest-btn {
       background: none; border: 1.5px solid var(--green);
-      color: var(--green); padding: 0.35rem 1.25rem;
+      color: var(--green); padding: 0.35rem 1.1rem;
       border-radius: 20px; font-size: 0.85rem; font-weight: 600;
-      cursor: pointer; transition: all 0.2s;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
+      margin-left: auto;
     }
     .suggest-btn:hover { background: var(--green); color: white; }
 
@@ -230,10 +228,6 @@
   <button class="tab-btn" data-tab="avoid">⚠️ GCC-Affiliated Businesses</button>
 </div>
 
-<div class="suggest-strip">
-  <button class="suggest-btn" id="open-suggest">+ Suggest a Business</button>
-</div>
-
 <!-- ====== SUGGEST MODAL ====== -->
 <div class="modal-backdrop" id="modal-backdrop">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -312,6 +306,7 @@
         <option>Faith Communities</option>
       </select>
       <span class="result-count" id="support-count"></span>
+      <button class="suggest-btn open-suggest">+ Suggest a Business</button>
     </div>
     <table class="support-table" id="support-table">
       <thead><tr><th>Business</th><th>Why Support</th><th>Category</th></tr></thead>
@@ -410,6 +405,7 @@
         <option>James Campaign Donor</option>
       </select>
       <span class="result-count" id="avoid-count"></span>
+      <button class="suggest-btn open-suggest">+ Suggest a Business</button>
     </div>
     <table class="avoid-table" id="avoid-table">
       <thead><tr><th>Business</th><th>Why Avoid</th><th>Category</th></tr></thead>
@@ -550,7 +546,7 @@
     newCatGrp.style.display = 'none'; rebuildCats('support');
   }
 
-  document.getElementById('open-suggest').addEventListener('click', openModal);
+  document.querySelectorAll('.open-suggest').forEach(btn => btn.addEventListener('click', openModal));
   document.getElementById('modal-close').addEventListener('click', closeModal);
   document.getElementById('modal-cancel').addEventListener('click', closeModal);
   document.getElementById('success-close').addEventListener('click', closeModal);
