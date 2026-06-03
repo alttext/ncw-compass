@@ -90,6 +90,11 @@
       border-radius: 10px; font-weight: 500; white-space: nowrap;
     }
 
+    thead th { cursor: pointer; user-select: none; }
+    thead th:hover { filter: brightness(1.15); }
+    thead th.sort-asc::after { content: ' ▲'; font-size: 0.65rem; }
+    thead th.sort-desc::after { content: ' ▼'; font-size: 0.65rem; }
+
     .no-results {
       text-align: center; padding: 2rem; color: #aaa;
       font-style: italic; display: none;
@@ -359,6 +364,23 @@
 
   setupFilter('support-search', 'support-cat', 'support-tbody', 'support-count', 'support-no-results');
   setupFilter('avoid-search', 'avoid-cat', 'avoid-tbody', 'avoid-count', 'avoid-no-results');
+
+  // Sortable headers
+  document.querySelectorAll('thead th').forEach((th, colIndex) => {
+    th.addEventListener('click', () => {
+      const tbody = th.closest('table').querySelector('tbody');
+      const asc = !th.classList.contains('sort-asc');
+      th.closest('thead').querySelectorAll('th').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+      th.classList.add(asc ? 'sort-asc' : 'sort-desc');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      rows.sort((a, b) => {
+        const aText = (a.cells[colIndex]?.textContent || '').trim().toLowerCase();
+        const bText = (b.cells[colIndex]?.textContent || '').trim().toLowerCase();
+        return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+      });
+      rows.forEach(r => tbody.appendChild(r));
+    });
+  });
 </script>
 
 </body>
