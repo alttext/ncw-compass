@@ -129,6 +129,86 @@
       color: #aaa; border-top: 1px solid var(--border); margin-top: 2rem;
     }
 
+    /* ── Suggest strip ── */
+    .suggest-strip {
+      background: #f2f2f2; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: center; padding: 0.55rem;
+    }
+    .suggest-btn {
+      background: none; border: 1.5px solid var(--green);
+      color: var(--green); padding: 0.35rem 1.25rem;
+      border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .suggest-btn:hover { background: var(--green); color: white; }
+
+    /* ── Modal ── */
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45); z-index: 100;
+      align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: white; border-radius: 10px;
+      width: 100%; max-width: 480px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      animation: modal-in 0.18s ease;
+    }
+    @keyframes modal-in {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      background: linear-gradient(135deg, #1a3a28, #2d7a4f);
+      color: white; padding: 1rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-radius: 10px 10px 0 0;
+    }
+    .modal-header h2 { font-size: 1.05rem; font-weight: 700; }
+    .modal-close {
+      background: none; border: none; color: white;
+      font-size: 1.5rem; line-height: 1; cursor: pointer; opacity: 0.75;
+    }
+    .modal-close:hover { opacity: 1; }
+    .modal form { padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+    .form-group > label { font-size: 0.85rem; font-weight: 600; color: #333; }
+    .form-group input[type="text"],
+    .form-group textarea,
+    .form-group select {
+      padding: 0.55rem 0.85rem; border: 1.5px solid var(--border);
+      border-radius: 6px; font-size: 0.9rem; font-family: inherit;
+      outline: none; background: white; resize: vertical;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { border-color: var(--green); }
+    .radio-group { display: flex; gap: 1.5rem; }
+    .radio-label {
+      display: flex; align-items: center; gap: 0.35rem;
+      font-size: 0.9rem; font-weight: 400; cursor: pointer;
+    }
+    .req { color: var(--red); }
+    .form-actions { display: flex; justify-content: flex-end; gap: 0.75rem; padding-top: 0.25rem; }
+    .btn-cancel {
+      background: none; border: 1.5px solid #ccc; color: #555;
+      padding: 0.5rem 1.1rem; border-radius: 6px; font-size: 0.9rem; cursor: pointer;
+    }
+    .btn-cancel:hover { border-color: #999; }
+    .btn-submit {
+      background: var(--green); color: white; border: none;
+      padding: 0.5rem 1.25rem; border-radius: 6px;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer;
+    }
+    .btn-submit:hover { background: #235f3d; }
+    .form-success {
+      padding: 1.5rem 1.25rem; text-align: center;
+      display: none; flex-direction: column; align-items: center; gap: 0.75rem;
+    }
+    .form-success .check { font-size: 2.5rem; }
+    .form-success p { color: #555; font-size: 0.9rem; }
+
     @media (max-width: 600px) {
       header h1 { font-size: 1.4rem; }
       .tab-btn { padding: 0.7rem 1.2rem; font-size: 0.85rem; }
@@ -148,6 +228,67 @@
 <div class="tabs">
   <button class="tab-btn active" data-tab="support">✅ Businesses to Support</button>
   <button class="tab-btn" data-tab="avoid">⚠️ GCC-Affiliated Businesses</button>
+</div>
+
+<div class="suggest-strip">
+  <button class="suggest-btn" id="open-suggest">+ Suggest a Business</button>
+</div>
+
+<!-- ====== SUGGEST MODAL ====== -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-header">
+      <h2 id="modal-title">Suggest a Business</h2>
+      <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <form id="suggest-form" name="suggest" netlify>
+      <input type="hidden" name="form-name" value="suggest">
+      <div class="form-group">
+        <label>Type of suggestion</label>
+        <div class="radio-group">
+          <label class="radio-label"><input type="radio" name="type" value="support" checked> To Support</label>
+          <label class="radio-label"><input type="radio" name="type" value="avoid"> To Avoid</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="biz-name">Business name <span class="req">*</span></label>
+        <input type="text" id="biz-name" name="business-name" required placeholder="e.g. Rosewood Café">
+      </div>
+      <div class="form-group">
+        <label for="biz-why" id="why-label">Why support this business? <span class="req">*</span></label>
+        <textarea id="biz-why" name="why" rows="3" required placeholder="e.g. LGBTQ+ owned, donates to local causes…"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="biz-cat">Category</label>
+        <select id="biz-cat" name="category">
+          <option value="">— Select a category —</option>
+          <option>Food &amp; Beverages</option>
+          <option>Retail &amp; Services</option>
+          <option>Health</option>
+          <option>Legal</option>
+          <option>Finance</option>
+          <option>Media</option>
+          <option>Resources &amp; Orgs</option>
+          <option>Faith Communities</option>
+          <option value="new">+ Add new category…</option>
+        </select>
+      </div>
+      <div class="form-group" id="new-cat-group" style="display:none">
+        <label for="biz-cat-new">New category name</label>
+        <input type="text" id="biz-cat-new" name="new-category" placeholder="e.g. Education">
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" id="modal-cancel">Cancel</button>
+        <button type="submit" class="btn-submit">Send Suggestion</button>
+      </div>
+    </form>
+    <div class="form-success" id="form-success">
+      <div class="check">✅</div>
+      <strong>Thanks for the suggestion!</strong>
+      <p>Your suggestion has been submitted. We'll review it and be in touch.</p>
+      <button class="btn-submit" id="success-close">Close</button>
+    </div>
+  </div>
 </div>
 
 <!-- ====== SUPPORT TAB ====== -->
@@ -388,6 +529,70 @@
 
   setupFilter('support-search', 'support-cat', 'support-tbody', 'support-count', 'support-no-results');
   setupFilter('avoid-search', 'avoid-cat', 'avoid-tbody', 'avoid-count', 'avoid-no-results');
+
+  // Suggest modal
+  const supportCats = ['Food & Beverages','Retail & Services','Health','Legal','Finance','Media','Resources & Orgs','Faith Communities'];
+  const avoidCats   = ['GCC Member-Owned','Freedom Con Vendor','Freedom Con Sponsor','James Campaign Donor'];
+
+  const backdrop   = document.getElementById('modal-backdrop');
+  const form       = document.getElementById('suggest-form');
+  const successEl  = document.getElementById('form-success');
+  const whyLabel   = document.getElementById('why-label');
+  const whyInput   = document.getElementById('biz-why');
+  const catSelect  = document.getElementById('biz-cat');
+  const newCatGrp  = document.getElementById('new-cat-group');
+  const newCatInp  = document.getElementById('biz-cat-new');
+
+  function openModal()  { backdrop.classList.add('open'); document.getElementById('biz-name').focus(); }
+  function closeModal() {
+    backdrop.classList.remove('open');
+    form.reset(); form.style.display = ''; successEl.style.display = 'none';
+    newCatGrp.style.display = 'none'; rebuildCats('support');
+  }
+
+  document.getElementById('open-suggest').addEventListener('click', openModal);
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('modal-cancel').addEventListener('click', closeModal);
+  document.getElementById('success-close').addEventListener('click', closeModal);
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) closeModal(); });
+
+  function rebuildCats(type) {
+    const cats = type === 'support' ? supportCats : avoidCats;
+    catSelect.innerHTML = '<option value="">— Select a category —</option>' +
+      cats.map(c => `<option>${c}</option>`).join('') +
+      '<option value="new">+ Add new category…</option>';
+  }
+
+  document.querySelectorAll('input[name="type"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      const isSup = radio.value === 'support';
+      whyLabel.innerHTML = (isSup ? 'Why support' : 'Why avoid') + ' this business? <span class="req">*</span>';
+      whyInput.placeholder = isSup ? 'e.g. LGBTQ+ owned, donates to local causes…' : 'e.g. GCC-affiliated owner, Freedom Con sponsor…';
+      rebuildCats(radio.value);
+      newCatGrp.style.display = 'none';
+    });
+  });
+
+  catSelect.addEventListener('change', () => {
+    newCatGrp.style.display = catSelect.value === 'new' ? '' : 'none';
+    if (catSelect.value === 'new') newCatInp.focus();
+  });
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const type = form.querySelector('input[name="type"]:checked').value;
+    const cat  = catSelect.value === 'new' ? newCatInp.value.trim() : catSelect.value;
+    const data = new URLSearchParams({
+      'form-name':    'suggest',
+      'type':         type,
+      'business-name': document.getElementById('biz-name').value.trim(),
+      'why':          whyInput.value.trim(),
+      'category':     cat,
+    });
+    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: data.toString() })
+      .then(() => { form.style.display = 'none'; successEl.style.display = 'flex'; })
+      .catch(() => { alert('Something went wrong — please try again.'); });
+  });
 
   // Sortable headers
   document.querySelectorAll('thead th').forEach(th => {
