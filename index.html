@@ -366,8 +366,9 @@
   setupFilter('avoid-search', 'avoid-cat', 'avoid-tbody', 'avoid-count', 'avoid-no-results');
 
   // Sortable headers
-  document.querySelectorAll('thead th').forEach((th, colIndex) => {
+  document.querySelectorAll('thead th').forEach(th => {
     th.addEventListener('click', () => {
+      const colIndex = Array.from(th.parentElement.children).indexOf(th);
       const tbody = th.closest('table').querySelector('tbody');
       const asc = !th.classList.contains('sort-asc');
       th.closest('thead').querySelectorAll('th').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
