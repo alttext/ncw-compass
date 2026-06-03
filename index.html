@@ -106,6 +106,8 @@
     thead th.sort-asc::after { content: ' ▲'; font-size: 0.65rem; }
     thead th.sort-desc::after { content: ' ▼'; font-size: 0.65rem; }
 
+    .has-tip { border-bottom: 1px dotted #999; cursor: help; }
+
     .no-results {
       text-align: center; padding: 2rem; color: #aaa;
       font-style: italic; display: none;
@@ -259,70 +261,70 @@
       <span class="result-count" id="avoid-count"></span>
     </div>
     <table class="avoid-table" id="avoid-table">
-      <thead><tr><th>Business</th><th>Owner / Affiliation</th><th>Why Avoid</th><th>Category</th></tr></thead>
+      <thead><tr><th>Business</th><th>Why Avoid</th><th>Category</th></tr></thead>
       <tbody id="avoid-tbody">
         <!-- GCC MEMBER-OWNED -->
-        <tr data-cat="GCC Member-Owned"><td>Firefly</td><td>Jeff &amp; Becky Weber</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Java Dog Espresso</td><td>Jeff Weber &amp; family</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Speiro</td><td>Jeff Weber &amp; family</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>J5 Coffee</td><td>Jesse &amp; Courtney Wilkinson</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Blue Lagoon Pool &amp; Spa</td><td>Andrew &amp; Brandy Vickery</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Ballard Ambulance</td><td>Clyde &amp; Ruth Ballard (founders)</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Chelan County PUD</td><td>CEO Kirk Hudson (GCC Elder Advisory Team)</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Smith Excavation</td><td>Gregg &amp; Jeny Smith</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Kenaston Music / Wenatchee DJ</td><td>Todd Kenaston</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>RediMedi Integrative Clinic</td><td>Karl &amp; Marian Lambert</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Cosina's Carpet Cleaning</td><td>—</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Laura Mounter Real Estate</td><td>Laura Mounter</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Danny Salas – Realtor, Windermere NCW</td><td>Danny Salas</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>American Land and Water Consulting</td><td>Bill Sullivan</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Haehl Sales</td><td>Dave Haehl (GCC Elder Advisory Team)</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Pinnacle Custom Builders</td><td>Travis Hofstetter</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Bartel Construction</td><td>Jason &amp; Cassy Bartel</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Elysian Lawn and Garden</td><td>David Andrews</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Anytime Fitness</td><td>Jeff &amp; Mona Guentzel</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Plumb Perfect</td><td>Matt &amp; Darci Bruggman</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Hurst Chiropractic</td><td>Chad &amp; Jolene Hurst</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>A-Central Asbestos</td><td>Rob Witheridge</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Suzelis Counseling</td><td>Blake Suzelis</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Sangster Motors</td><td>—</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>A Paw Above</td><td>Matt &amp; Susie Darlington</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Petro Strategic Solutions LLC</td><td>Rachel Petro</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>1st Choice Restorations</td><td>Bobby Wigington</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Andis Salon</td><td>Mary Cleveland</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Jackie's Property Services</td><td>Jackie Young</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Wenatchee Dental Arts</td><td>John &amp; Connie Divis</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
-        <tr data-cat="GCC Member-Owned"><td>Ovenell's Cabinets</td><td>Steven &amp; Kathy Ovenell</td><td></td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Jeff &amp; Becky Weber">Firefly</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Jeff Weber &amp; family">Java Dog Espresso</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Jeff Weber &amp; family">Speiro</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Jesse &amp; Courtney Wilkinson">J5 Coffee</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Andrew &amp; Brandy Vickery">Blue Lagoon Pool &amp; Spa</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Founders: Clyde &amp; Ruth Ballard">Ballard Ambulance</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="CEO: Kirk Hudson (GCC Elder Advisory Team)">Chelan County PUD</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Gregg &amp; Jeny Smith">Smith Excavation</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Todd Kenaston">Kenaston Music / Wenatchee DJ</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Karl &amp; Marian Lambert">RediMedi Integrative Clinic</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Cosina's Carpet Cleaning</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Laura Mounter">Laura Mounter Real Estate</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Danny Salas">Danny Salas – Realtor, Windermere NCW</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Bill Sullivan">American Land and Water Consulting</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Dave Haehl (GCC Elder Advisory Team)">Haehl Sales</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Travis Hofstetter">Pinnacle Custom Builders</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Jason &amp; Cassy Bartel">Bartel Construction</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: David Andrews">Elysian Lawn and Garden</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Jeff &amp; Mona Guentzel">Anytime Fitness</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Matt &amp; Darci Bruggman">Plumb Perfect</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Chad &amp; Jolene Hurst">Hurst Chiropractic</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Rob Witheridge">A-Central Asbestos</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Blake Suzelis">Suzelis Counseling</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Sangster Motors</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Matt &amp; Susie Darlington">A Paw Above</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Rachel Petro">Petro Strategic Solutions LLC</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Bobby Wigington">1st Choice Restorations</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Mary Cleveland">Andis Salon</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Jackie Young">Jackie's Property Services</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: John &amp; Connie Divis">Wenatchee Dental Arts</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td><span class="has-tip" title="Owner: Steven &amp; Kathy Ovenell">Ovenell's Cabinets</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
         <!-- FREEDOM CON VENDORS -->
-        <tr data-cat="Freedom Con Vendor"><td>SMN Shop</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
-        <tr data-cat="Freedom Con Vendor"><td>Doghouse Motor Sports</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
-        <tr data-cat="Freedom Con Vendor"><td>Woody's Classic Man</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
-        <tr data-cat="Freedom Con Vendor"><td>Dragontail Forge</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
-        <tr data-cat="Freedom Con Vendor"><td>One 9 Woodworking</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
-        <tr data-cat="Freedom Con Vendor"><td>Real Faith</td><td>Mark Driscoll (online ministry)</td><td></td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
-        <tr data-cat="Freedom Con Vendor"><td>Vector College</td><td>GCC's private unaccredited college</td><td></td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
-        <tr data-cat="Freedom Con Vendor"><td>Logos Bible Software</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <tr data-cat="Freedom Con Vendor"><td>SMN Shop</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <tr data-cat="Freedom Con Vendor"><td>Doghouse Motor Sports</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <tr data-cat="Freedom Con Vendor"><td>Woody's Classic Man</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <tr data-cat="Freedom Con Vendor"><td>Dragontail Forge</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <tr data-cat="Freedom Con Vendor"><td>One 9 Woodworking</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <tr data-cat="Freedom Con Vendor"><td><span class="has-tip" title="Mark Driscoll (online ministry)">Real Faith</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <tr data-cat="Freedom Con Vendor"><td><span class="has-tip" title="GCC's private unaccredited college">Vector College</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <tr data-cat="Freedom Con Vendor"><td>Logos Bible Software</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
         <!-- FREEDOM CON SPONSORS -->
-        <tr data-cat="Freedom Con Sponsor"><td>Riverway Family Dental</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
-        <tr data-cat="Freedom Con Sponsor"><td>Don Johnson Sales</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
-        <tr data-cat="Freedom Con Sponsor"><td>National Write Your Congressman</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
-        <tr data-cat="Freedom Con Sponsor"><td>Hope Outfitters</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
-        <tr data-cat="Freedom Con Sponsor"><td>TPUSA Communities</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
-        <tr data-cat="Freedom Con Sponsor"><td>McGregor Farms</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
-        <tr data-cat="Freedom Con Sponsor"><td>Business Makers Network</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
-        <tr data-cat="Freedom Con Sponsor"><td>The Family Captain</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
-        <tr data-cat="Freedom Con Sponsor"><td>Valley Marine</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
-        <tr data-cat="Freedom Con Sponsor"><td>Thacker Excavation &amp; Transportation, LLC</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
-        <tr data-cat="Freedom Con Sponsor"><td>Cuts</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
-        <tr data-cat="Freedom Con Sponsor"><td>Freedom Fuel</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
-        <tr data-cat="Freedom Con Sponsor"><td>Table Storefronts</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
-        <tr data-cat="Freedom Con Sponsor"><td>Arc (American Reconstruction Concepts)</td><td>—</td><td></td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Riverway Family Dental</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Don Johnson Sales</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>National Write Your Congressman</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Hope Outfitters</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>TPUSA Communities</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>McGregor Farms</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Business Makers Network</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>The Family Captain</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Valley Marine</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Thacker Excavation &amp; Transportation, LLC</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Cuts</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Freedom Fuel</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Table Storefronts</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Arc (American Reconstruction Concepts)</td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
         <!-- JAMES CAMPAIGN DONORS -->
-        <tr data-cat="James Campaign Donor"><td>Retreat Wellness and Medical Spa</td><td>Dr. Gillian Shaw (owner) – $1,000</td><td></td><td><span class="tag-cat">James Campaign Donor</span></td></tr>
-        <tr data-cat="James Campaign Donor"><td>Blue Bird Inc.</td><td>Raymond Schmitten (CEO) – $1,200</td><td></td><td><span class="tag-cat">James Campaign Donor</span></td></tr>
-        <tr data-cat="James Campaign Donor"><td>Lessen Homes</td><td>Kent Lessen (owner) – $1,500</td><td></td><td><span class="tag-cat">James Campaign Donor</span></td></tr>
-        <tr data-cat="James Campaign Donor"><td>Sitemetric</td><td>Pete Johnson (director) – $300</td><td></td><td><span class="tag-cat">James Campaign Donor</span></td></tr>
-        <tr data-cat="James Campaign Donor"><td>True Grit Safety Co.</td><td>Joshua Grit (owner)</td><td></td><td><span class="tag-cat">James Campaign Donor</span></td></tr>
+        <tr data-cat="James Campaign Donor"><td><span class="has-tip" title="Owner: Dr. Gillian Shaw – donated $1,000">Retreat Wellness and Medical Spa</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">James Campaign Donor</span></td></tr>
+        <tr data-cat="James Campaign Donor"><td><span class="has-tip" title="CEO: Raymond Schmitten – donated $1,200">Blue Bird Inc.</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">James Campaign Donor</span></td></tr>
+        <tr data-cat="James Campaign Donor"><td><span class="has-tip" title="Owner: Kent Lessen – donated $1,500">Lessen Homes</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">James Campaign Donor</span></td></tr>
+        <tr data-cat="James Campaign Donor"><td><span class="has-tip" title="Director: Pete Johnson – donated $300">Sitemetric</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">James Campaign Donor</span></td></tr>
+        <tr data-cat="James Campaign Donor"><td><span class="has-tip" title="Owner: Joshua Grit">True Grit Safety Co.</span></td><td>Supports Grace City Church and agenda</td><td><span class="tag-cat">James Campaign Donor</span></td></tr>
       </tbody>
     </table>
     <div class="no-results" id="avoid-no-results">No results found.</div>
