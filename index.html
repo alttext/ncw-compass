@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wenatchee Business Guide</title>
+  <style>
+    :root {
+      --green: #2d7a4f;
+      --green-light: #e8f5ee;
+      --red: #b33a3a;
+      --red-light: #fdf0f0;
+      --gray: #4a4a4a;
+      --border: #ddd;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f2f2f2; color: var(--gray); }
+
+    header {
+      background: linear-gradient(135deg, #1a3a28 0%, #2d7a4f 100%);
+      color: white; padding: 2.5rem 1.5rem 2rem; text-align: center;
+    }
+    header h1 { font-size: 2rem; font-weight: 700; }
+    header p { margin-top: 0.5rem; opacity: 0.85; font-size: 0.95rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .updated { font-size: 0.8rem; opacity: 0.6; margin-top: 0.75rem; }
+
+    .tabs {
+      display: flex; justify-content: center;
+      background: #1a3a28; border-bottom: 3px solid #2d7a4f;
+    }
+    .tab-btn {
+      padding: 0.85rem 2.5rem; background: none; border: none;
+      color: rgba(255,255,255,0.65); font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      border-bottom: 3px solid transparent; margin-bottom: -3px;
+    }
+    .tab-btn:hover { color: white; }
+    .tab-btn.active { color: #6fe0a0; border-bottom-color: #6fe0a0; }
+
+    .container { max-width: 1050px; margin: 0 auto; padding: 1.5rem; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .note-box {
+      background: #fffbea; border-left: 4px solid #f5c518;
+      padding: 0.75rem 1rem; border-radius: 4px;
+      font-size: 0.85rem; margin-bottom: 1.25rem; color: #5a4800;
+    }
+    .note-box a { color: #5a4800; }
+
+    .search-bar {
+      display: flex; gap: 0.75rem; margin-bottom: 1.25rem;
+      align-items: center; flex-wrap: wrap;
+    }
+    .search-bar input {
+      flex: 1; min-width: 200px; padding: 0.6rem 1rem;
+      border: 1.5px solid var(--border); border-radius: 6px;
+      font-size: 0.95rem; outline: none; background: white;
+    }
+    .search-bar input:focus { border-color: var(--green); }
+    .search-bar select {
+      padding: 0.6rem 0.9rem; border: 1.5px solid var(--border);
+      border-radius: 6px; font-size: 0.9rem; background: white; cursor: pointer;
+    }
+    .result-count { font-size: 0.85rem; color: #888; min-width: 80px; }
+
+    table {
+      width: 100%; border-collapse: collapse; background: white;
+      border-radius: 8px; overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08); font-size: 0.9rem;
+    }
+    thead th {
+      padding: 0.7rem 1rem; text-align: left;
+      font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px; color: white;
+    }
+    .support-table thead th { background: var(--green); }
+    .avoid-table thead th { background: var(--red); }
+
+    tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #fafafa; }
+    td { padding: 0.65rem 1rem; vertical-align: top; }
+    td:first-child { font-weight: 600; }
+
+    .tag-cat {
+      display: inline-block; background: #eee; color: #555;
+      font-size: 0.7rem; padding: 0.15rem 0.5rem;
+      border-radius: 10px; font-weight: 500; white-space: nowrap;
+    }
+
+    .no-results {
+      text-align: center; padding: 2rem; color: #aaa;
+      font-style: italic; display: none;
+    }
+
+    footer {
+      text-align: center; padding: 2rem; font-size: 0.8rem;
+      color: #aaa; border-top: 1px solid var(--border); margin-top: 2rem;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.4rem; }
+      .tab-btn { padding: 0.7rem 1.2rem; font-size: 0.85rem; }
+      td, thead th { padding: 0.5rem 0.6rem; font-size: 0.82rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Wenatchee Business Guide</h1>
+  <p>A community resource for spending money in alignment with your values in the Wenatchee Valley.</p>
+  <div class="updated">Last updated: June 3, 2026 &nbsp;·&nbsp; Sources: Dominick Bonny Reports, Friends of Stella (Progressive Devilry)</div>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="support">✅ Businesses to Support</button>
+  <button class="tab-btn" data-tab="avoid">⚠️ GCC-Affiliated Businesses</button>
+</div>
+
+<!-- ====== SUPPORT TAB ====== -->
+<div id="tab-support" class="tab-content active">
+  <div class="container">
+    <div class="note-box">
+      These businesses are identified by the community as progressive, welcoming, and affirming.
+      Source: <a href="https://progressivedevilry.com/friends-of-stella/friends-of-stella-wenatchee/" target="_blank">Friends of Stella – Progressive Devilry</a>.
+      To submit a business, email stella@progressivedevilry.com.
+    </div>
+    <div class="search-bar">
+      <input type="text" id="support-search" placeholder="Search businesses or descriptions…"/>
+      <select id="support-cat">
+        <option value="">All Categories</option>
+        <option>Food &amp; Beverages</option>
+        <option>Retail &amp; Services</option>
+        <option>Health</option>
+        <option>Legal</option>
+        <option>Finance</option>
+        <option>Media</option>
+        <option>Resources &amp; Orgs</option>
+        <option>Faith Communities</option>
+      </select>
+      <span class="result-count" id="support-count"></span>
+    </div>
+    <table class="support-table" id="support-table">
+      <thead><tr><th>Business</th><th>Description</th><th>Category</th></tr></thead>
+      <tbody id="support-tbody">
+        <tr data-cat="Food &amp; Beverages"><td>Epoch Gaming Lounge</td><td>All ages games &amp; drinks</td><td><span class="tag-cat">Food &amp; Beverages</span></td></tr>
+        <tr data-cat="Food &amp; Beverages"><td>Top Thai</td><td>Thai restaurant &amp; bar</td><td><span class="tag-cat">Food &amp; Beverages</span></td></tr>
+        <tr data-cat="Food &amp; Beverages"><td>Atlas Fare</td><td>Fine dining</td><td><span class="tag-cat">Food &amp; Beverages</span></td></tr>
+        <tr data-cat="Food &amp; Beverages"><td>Shakti's</td><td>Fine dining</td><td><span class="tag-cat">Food &amp; Beverages</span></td></tr>
+        <tr data-cat="Food &amp; Beverages"><td>Perico's Lounge</td><td>Mexican &amp; American food &amp; drinks</td><td><span class="tag-cat">Food &amp; Beverages</span></td></tr>
+        <tr data-cat="Food &amp; Beverages"><td>Wally's House of Booze</td><td>Bar &amp; live music</td><td><span class="tag-cat">Food &amp; Beverages</span></td></tr>
+        <tr data-cat="Food &amp; Beverages"><td>The Taproom by Hellbent Brewing</td><td>Restaurant &amp; bar</td><td><span class="tag-cat">Food &amp; Beverages</span></td></tr>
+        <tr data-cat="Food &amp; Beverages"><td>Ground Control</td><td>Bar &amp; retail co-op</td><td><span class="tag-cat">Food &amp; Beverages</span></td></tr>
+        <tr data-cat="Food &amp; Beverages"><td>Cannabis Provisions</td><td>Retail cannabis store</td><td><span class="tag-cat">Food &amp; Beverages</span></td></tr>
+        <tr data-cat="Food &amp; Beverages"><td>Sage Hills Bakery</td><td>Coffee &amp; baked goods</td><td><span class="tag-cat">Food &amp; Beverages</span></td></tr>
+        <tr data-cat="Food &amp; Beverages"><td>Little Red's Espresso &amp; Bakery</td><td>Coffee &amp; baked goods</td><td><span class="tag-cat">Food &amp; Beverages</span></td></tr>
+        <tr data-cat="Food &amp; Beverages"><td>Nammy Healthy Zone</td><td>Snacks, smoothies, blended energy &amp; protein</td><td><span class="tag-cat">Food &amp; Beverages</span></td></tr>
+        <tr data-cat="Food &amp; Beverages"><td>Burch Mountain BBQ</td><td>Catering &amp; off-site BBQ truck</td><td><span class="tag-cat">Food &amp; Beverages</span></td></tr>
+        <tr data-cat="Food &amp; Beverages"><td>Dooley Dogs</td><td>Snack &amp; hot dog cart</td><td><span class="tag-cat">Food &amp; Beverages</span></td></tr>
+        <tr data-cat="Food &amp; Beverages"><td>NCW Wine Tours</td><td>Tour local vineyards with wine tastings</td><td><span class="tag-cat">Food &amp; Beverages</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Ye Olde Bookshoppe</td><td>Books, movies, art &amp; collectibles</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>YWCA Thrift Store</td><td>Thrifted clothes, furniture &amp; more</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Time Capsule</td><td>All ages entertainment, games &amp; collectibles</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>American Shoe Shop</td><td>Retail &amp; shoe repair</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Tumbleweed</td><td>Retail clothes, jewelry &amp; accessories</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Henry Harrow</td><td>Fine decor and accessories</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Studio 7 Tattoo</td><td>Tattoo parlor</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Ole Soul</td><td>Tattoo parlor</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Integrity Piercing</td><td>Piercing parlor</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Fable Books &amp; Blooms</td><td>Book &amp; plant store</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Eastmont Lanes</td><td>Bowling alley, arcade &amp; bar (East Wenatchee)</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>P2X Studio</td><td>Marketing, videography &amp; photography</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Endsley &amp; Co</td><td>Locally owned marketing firm</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Community Shopper</td><td>Advertising magazine for North Central Washington</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>XOXO, CM</td><td>Handmade crafts and clothing</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Lily Lane Creations</td><td>Handmade jewelry and screen printing</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>IAmSpeaking Stickers &amp; Decals</td><td>Stickers, decals &amp; collectibles</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>The Numerica Performing Arts Center</td><td>Local performing arts &amp; entertainment</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>The Radar Dames</td><td>Adult burlesque entertainment</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Warm Springs Inn &amp; Winery</td><td>Wedding venue, B&amp;B &amp; indulgences</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Bumble Bea's Garden</td><td>Florist</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>PNW Fun Zone</td><td>Rentable inflatables, characters &amp; party decor</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Waxing by Barbara</td><td>Personal waxing and spa services</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Studio 607 – Hair by April Stagner &amp; Fay Sizemore</td><td>Hair &amp; salon (trans inclusive stylists)</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Massage-Zen Wellness Clinic</td><td>Personal massage therapy</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>On the Spot Cleaning</td><td>Residential cleaning service</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>The Mercantile</td><td>Rentable commercial office space</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Wenatchee Insurance Agency</td><td>Health, life, home, auto &amp; business insurance</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Avia Environmental Consulting</td><td>Environmental consulting, permitting &amp; resource management</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Wenatchee Computer</td><td>Computer repair &amp; IT services</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Retail &amp; Services"><td>Shannon Kraft – Real Estate</td><td>Real estate services</td><td><span class="tag-cat">Retail &amp; Services</span></td></tr>
+        <tr data-cat="Health"><td>Planned Parenthood</td><td>Health resources &amp; services</td><td><span class="tag-cat">Health</span></td></tr>
+        <tr data-cat="Health"><td>Reflective River Counseling</td><td>Welcoming &amp; affirming counseling, Morgan Walker (ages 13–50+)</td><td><span class="tag-cat">Health</span></td></tr>
+        <tr data-cat="Finance"><td>Numerica Credit Union</td><td>Personal and business banking</td><td><span class="tag-cat">Finance</span></td></tr>
+        <tr data-cat="Legal"><td>Overcast Law Offices</td><td>Law services</td><td><span class="tag-cat">Legal</span></td></tr>
+        <tr data-cat="Legal"><td>Hankins Tibbits Law Firm</td><td>Law services</td><td><span class="tag-cat">Legal</span></td></tr>
+        <tr data-cat="Legal"><td>Volunteer Attorney Services (VAS)</td><td>Low to no cost attorney services</td><td><span class="tag-cat">Legal</span></td></tr>
+        <tr data-cat="Media"><td>The Comet</td><td>Free local newspaper, advertising &amp; editorials</td><td><span class="tag-cat">Media</span></td></tr>
+        <tr data-cat="Media"><td>Dominick Bonny Reports</td><td>Local independent journalist</td><td><span class="tag-cat">Media</span></td></tr>
+        <tr data-cat="Resources &amp; Orgs"><td>Wenatchee for Immigrant Justice</td><td>Immigrant resources &amp; direction</td><td><span class="tag-cat">Resources &amp; Orgs</span></td></tr>
+        <tr data-cat="Resources &amp; Orgs"><td>YWCA NCW</td><td>Food &amp; housing insecurity services for women &amp; marginalized communities</td><td><span class="tag-cat">Resources &amp; Orgs</span></td></tr>
+        <tr data-cat="Resources &amp; Orgs"><td>Out NCW</td><td>Marginalized youth leadership events &amp; opportunities</td><td><span class="tag-cat">Resources &amp; Orgs</span></td></tr>
+        <tr data-cat="Resources &amp; Orgs"><td>TREAD</td><td>Non-profit for accessible &amp; sustainable outdoor recreation</td><td><span class="tag-cat">Resources &amp; Orgs</span></td></tr>
+        <tr data-cat="Resources &amp; Orgs"><td>Wenatchee CAFE</td><td>Community for the Advancement of Family Education</td><td><span class="tag-cat">Resources &amp; Orgs</span></td></tr>
+        <tr data-cat="Resources &amp; Orgs"><td>NCW Libraries</td><td>Libraries across North Central Washington</td><td><span class="tag-cat">Resources &amp; Orgs</span></td></tr>
+        <tr data-cat="Resources &amp; Orgs"><td>Sustainable NCW</td><td>Non-profit for sustainability &amp; environmental stewardship</td><td><span class="tag-cat">Resources &amp; Orgs</span></td></tr>
+        <tr data-cat="Resources &amp; Orgs"><td>Chelan-Douglas Land Trust</td><td>Land stewards preserving healthy habitats</td><td><span class="tag-cat">Resources &amp; Orgs</span></td></tr>
+        <tr data-cat="Resources &amp; Orgs"><td>Akin: Triple Point NCW</td><td>Non-religious queer youth services &amp; support</td><td><span class="tag-cat">Resources &amp; Orgs</span></td></tr>
+        <tr data-cat="Resources &amp; Orgs"><td>Rural People's Voice</td><td>Non-partisan progressive committee</td><td><span class="tag-cat">Resources &amp; Orgs</span></td></tr>
+        <tr data-cat="Resources &amp; Orgs"><td>Wenatchee Valley Museum &amp; Cultural Center</td><td>Local exhibits, history &amp; more</td><td><span class="tag-cat">Resources &amp; Orgs</span></td></tr>
+        <tr data-cat="Faith Communities"><td>First United Methodist Church</td><td>Welcoming &amp; affirming church</td><td><span class="tag-cat">Faith Communities</span></td></tr>
+        <tr data-cat="Faith Communities"><td>Grace Lutheran Church</td><td>Welcoming &amp; affirming church</td><td><span class="tag-cat">Faith Communities</span></td></tr>
+        <tr data-cat="Faith Communities"><td>Wenatchee Youth Community</td><td>Welcoming &amp; affirming youth church activities</td><td><span class="tag-cat">Faith Communities</span></td></tr>
+        <tr data-cat="Faith Communities"><td>New Song Community Church</td><td>Welcoming &amp; affirming church</td><td><span class="tag-cat">Faith Communities</span></td></tr>
+        <tr data-cat="Faith Communities"><td>Cascade UU Fellowship</td><td>Welcoming &amp; affirming church</td><td><span class="tag-cat">Faith Communities</span></td></tr>
+        <tr data-cat="Faith Communities"><td>The Sunnyslope Church</td><td>Welcoming &amp; affirming church</td><td><span class="tag-cat">Faith Communities</span></td></tr>
+      </tbody>
+    </table>
+    <div class="no-results" id="support-no-results">No results found.</div>
+  </div>
+</div>
+
+<!-- ====== AVOID TAB ====== -->
+<div id="tab-avoid" class="tab-content">
+  <div class="container">
+    <div class="note-box">
+      These businesses are identified as owned/operated by Grace City Church (GCC) members, GCC event sponsors or vendors, or donors to GCC co-founder Adam James' political campaign.
+      Source: <a href="https://dominickb.substack.com/p/introducing-the-list-a-resource-for" target="_blank">Dominick Bonny Reports</a>.
+    </div>
+    <div class="search-bar">
+      <input type="text" id="avoid-search" placeholder="Search businesses or owners…"/>
+      <select id="avoid-cat">
+        <option value="">All Categories</option>
+        <option>GCC Member-Owned</option>
+        <option>Freedom Con Vendor</option>
+        <option>Freedom Con Sponsor</option>
+        <option>James Campaign Donor</option>
+      </select>
+      <span class="result-count" id="avoid-count"></span>
+    </div>
+    <table class="avoid-table" id="avoid-table">
+      <thead><tr><th>Business</th><th>Owner / Affiliation</th><th>Category</th></tr></thead>
+      <tbody id="avoid-tbody">
+        <!-- GCC MEMBER-OWNED -->
+        <tr data-cat="GCC Member-Owned"><td>Firefly</td><td>Jeff &amp; Becky Weber</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Java Dog Espresso</td><td>Jeff Weber &amp; family</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Speiro</td><td>Jeff Weber &amp; family</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>J5 Coffee</td><td>Jesse &amp; Courtney Wilkinson</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Blue Lagoon Pool &amp; Spa</td><td>Andrew &amp; Brandy Vickery</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Ballard Ambulance</td><td>Clyde &amp; Ruth Ballard (founders)</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Chelan County PUD</td><td>CEO Kirk Hudson (GCC Elder Advisory Team)</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Smith Excavation</td><td>Gregg &amp; Jeny Smith</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Kenaston Music / Wenatchee DJ</td><td>Todd Kenaston</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>RediMedi Integrative Clinic</td><td>Karl &amp; Marian Lambert</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Cosina's Carpet Cleaning</td><td>—</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Laura Mounter Real Estate</td><td>Laura Mounter</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Danny Salas – Realtor, Windermere NCW</td><td>Danny Salas</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>American Land and Water Consulting</td><td>Bill Sullivan</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Haehl Sales</td><td>Dave Haehl (GCC Elder Advisory Team)</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Pinnacle Custom Builders</td><td>Travis Hofstetter</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Bartel Construction</td><td>Jason &amp; Cassy Bartel</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Elysian Lawn and Garden</td><td>David Andrews</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Anytime Fitness</td><td>Jeff &amp; Mona Guentzel</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Plumb Perfect</td><td>Matt &amp; Darci Bruggman</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Hurst Chiropractic</td><td>Chad &amp; Jolene Hurst</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>A-Central Asbestos</td><td>Rob Witheridge</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Suzelis Counseling</td><td>Blake Suzelis</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Sangster Motors</td><td>—</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>A Paw Above</td><td>Matt &amp; Susie Darlington</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Petro Strategic Solutions LLC</td><td>Rachel Petro</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>1st Choice Restorations</td><td>Bobby Wigington</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Andis Salon</td><td>Mary Cleveland</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Jackie's Property Services</td><td>Jackie Young</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Wenatchee Dental Arts</td><td>John &amp; Connie Divis</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <tr data-cat="GCC Member-Owned"><td>Ovenell's Cabinets</td><td>Steven &amp; Kathy Ovenell</td><td><span class="tag-cat">GCC Member-Owned</span></td></tr>
+        <!-- FREEDOM CON VENDORS -->
+        <tr data-cat="Freedom Con Vendor"><td>SMN Shop</td><td>—</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <tr data-cat="Freedom Con Vendor"><td>Doghouse Motor Sports</td><td>—</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <tr data-cat="Freedom Con Vendor"><td>Woody's Classic Man</td><td>—</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <tr data-cat="Freedom Con Vendor"><td>Dragontail Forge</td><td>—</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <tr data-cat="Freedom Con Vendor"><td>One 9 Woodworking</td><td>—</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <tr data-cat="Freedom Con Vendor"><td>Real Faith</td><td>Mark Driscoll (online ministry)</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <tr data-cat="Freedom Con Vendor"><td>Vector College</td><td>GCC's private unaccredited college</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <tr data-cat="Freedom Con Vendor"><td>Logos Bible Software</td><td>—</td><td><span class="tag-cat">Freedom Con Vendor</span></td></tr>
+        <!-- FREEDOM CON SPONSORS -->
+        <tr data-cat="Freedom Con Sponsor"><td>Riverway Family Dental</td><td>—</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Don Johnson Sales</td><td>—</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>National Write Your Congressman</td><td>—</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Hope Outfitters</td><td>—</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>TPUSA Communities</td><td>—</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>McGregor Farms</td><td>—</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Business Makers Network</td><td>—</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>The Family Captain</td><td>—</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Valley Marine</td><td>—</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Thacker Excavation &amp; Transportation, LLC</td><td>—</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Cuts</td><td>—</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Freedom Fuel</td><td>—</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Table Storefronts</td><td>—</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <tr data-cat="Freedom Con Sponsor"><td>Arc (American Reconstruction Concepts)</td><td>—</td><td><span class="tag-cat">Freedom Con Sponsor</span></td></tr>
+        <!-- JAMES CAMPAIGN DONORS -->
+        <tr data-cat="James Campaign Donor"><td>Retreat Wellness and Medical Spa</td><td>Dr. Gillian Shaw (owner) – $1,000</td><td><span class="tag-cat">James Campaign Donor</span></td></tr>
+        <tr data-cat="James Campaign Donor"><td>Blue Bird Inc.</td><td>Raymond Schmitten (CEO) – $1,200</td><td><span class="tag-cat">James Campaign Donor</span></td></tr>
+        <tr data-cat="James Campaign Donor"><td>Lessen Homes</td><td>Kent Lessen (owner) – $1,500</td><td><span class="tag-cat">James Campaign Donor</span></td></tr>
+        <tr data-cat="James Campaign Donor"><td>Sitemetric</td><td>Pete Johnson (director) – $300</td><td><span class="tag-cat">James Campaign Donor</span></td></tr>
+        <tr data-cat="James Campaign Donor"><td>True Grit Safety Co.</td><td>Joshua
