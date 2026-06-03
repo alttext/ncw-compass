@@ -182,11 +182,17 @@
     .form-group input:focus,
     .form-group textarea:focus,
     .form-group select:focus { border-color: var(--green); }
-    .radio-group { display: flex; gap: 1.5rem; }
+    .radio-group { display: flex; gap: 0.75rem; }
     .radio-label {
-      display: flex; align-items: center; gap: 0.35rem;
-      font-size: 0.9rem; font-weight: 400; cursor: pointer;
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer;
+      padding: 0.6rem 1rem; border-radius: 7px; border: 2px solid;
+      flex: 1; transition: background 0.15s, border-color 0.15s;
     }
+    .support-label { border-color: #a8d5b8; color: var(--green); background: #f4fbf7; }
+    .support-label:has(input:checked) { border-color: var(--green); background: var(--green-light); }
+    .avoid-label { border-color: #f0b8b8; color: var(--red); background: #fff7f7; }
+    .avoid-label:has(input:checked) { border-color: var(--red); background: var(--red-light); }
     .req { color: var(--red); }
     .form-actions { display: flex; justify-content: flex-end; gap: 0.75rem; padding-top: 0.25rem; }
     .btn-cancel {
@@ -240,8 +246,8 @@
       <div class="form-group">
         <label>Type of suggestion</label>
         <div class="radio-group">
-          <label class="radio-label"><input type="radio" name="type" value="support" checked> To Support</label>
-          <label class="radio-label"><input type="radio" name="type" value="avoid"> To Avoid</label>
+          <label class="radio-label support-label"><input type="radio" name="type" value="support" required> To Support</label>
+          <label class="radio-label avoid-label"><input type="radio" name="type" value="avoid" required> To Avoid</label>
         </div>
       </div>
       <div class="form-group">
@@ -249,8 +255,8 @@
         <input type="text" id="biz-name" name="business-name" required placeholder="e.g. Rosewood Café">
       </div>
       <div class="form-group">
-        <label for="biz-why" id="why-label">Why support this business? <span class="req">*</span></label>
-        <textarea id="biz-why" name="why" rows="3" required placeholder="e.g. LGBTQ+ owned, donates to local causes…"></textarea>
+        <label for="biz-why" id="why-label">Why support or avoid this business? <span class="req">*</span></label>
+        <textarea id="biz-why" name="why" rows="3" required placeholder="Select a type above, then describe why…"></textarea>
       </div>
       <div class="form-group">
         <label for="biz-cat">Category</label>
@@ -563,7 +569,7 @@
     radio.addEventListener('change', () => {
       const isSup = radio.value === 'support';
       whyLabel.innerHTML = (isSup ? 'Why support' : 'Why avoid') + ' this business? <span class="req">*</span>';
-      whyInput.placeholder = isSup ? 'e.g. LGBTQ+ owned, donates to local causes…' : 'e.g. GCC-affiliated owner, Freedom Con sponsor…';
+      whyInput.placeholder = isSup ? 'e.g. LGBTQ+ owned, donates to local causes…' : 'Intolerant, racist, sexist, affiliated with GCC…';
       rebuildCats(radio.value);
       newCatGrp.style.display = 'none';
     });
