@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Wenatchee Business Guide</title>
+  <title>NCW Compass</title>
   <style>
     :root {
       --green: #2d7a4f;
@@ -21,21 +21,32 @@
       color: white; padding: 2.5rem 1.5rem 2rem; text-align: center;
     }
     header h1 { font-size: 2rem; font-weight: 700; }
+    header .subtitle { margin-top: 0.3rem; font-size: 1rem; font-weight: 600; opacity: 0.75; letter-spacing: 0.04em; text-transform: uppercase; }
     header p { margin-top: 0.5rem; opacity: 0.85; font-size: 0.95rem; max-width: 600px; margin-left: auto; margin-right: auto; }
     .updated { font-size: 0.8rem; opacity: 0.6; margin-top: 0.75rem; }
 
     .tabs {
       display: flex; justify-content: center;
       background: #1a3a28; border-bottom: 3px solid #2d7a4f;
+      gap: 0.25rem; padding: 0 1rem;
     }
     .tab-btn {
-      padding: 0.85rem 2.5rem; background: none; border: none;
-      color: rgba(255,255,255,0.65); font-size: 1rem; font-weight: 600;
+      padding: 0.85rem 2rem; background: none; border: none;
+      color: rgba(255,255,255,0.6); font-size: 1rem; font-weight: 600;
       cursor: pointer; transition: all 0.2s;
       border-bottom: 3px solid transparent; margin-bottom: -3px;
+      border-radius: 6px 6px 0 0; letter-spacing: 0.01em;
+      position: relative;
     }
-    .tab-btn:hover { color: white; }
-    .tab-btn.active { color: #6fe0a0; border-bottom-color: #6fe0a0; }
+    .tab-btn:hover {
+      color: white;
+      background: rgba(255,255,255,0.08);
+    }
+    .tab-btn.active {
+      color: #6fe0a0;
+      border-bottom-color: #6fe0a0;
+      background: rgba(111,224,160,0.1);
+    }
 
     .container { max-width: 1050px; margin: 0 auto; padding: 1.5rem; }
 
@@ -115,7 +126,8 @@
 <body>
 
 <header>
-  <h1>Wenatchee Business Guide</h1>
+  <h1>NCW Compass</h1>
+  <p class="subtitle">Wenatchee Business Guide</p>
   <p>A community resource for spending money in alignment with your values in the Wenatchee Valley.</p>
   <div class="updated">Last updated: June 3, 2026 &nbsp;·&nbsp; Sources: Dominick Bonny Reports, Friends of Stella (Progressive Devilry)</div>
 </header>
