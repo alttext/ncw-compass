@@ -161,8 +161,9 @@
       background: linear-gradient(135deg, #1a3a28, #2d7a4f);
       color: white; padding: 1rem 1.25rem;
       display: flex; align-items: center; justify-content: space-between;
-      border-radius: 10px 10px 0 0;
+      border-radius: 10px 10px 0 0; transition: background 0.2s;
     }
+    .modal.avoid-mode .modal-header { background: linear-gradient(135deg, #6b1a1a, var(--red)); }
     .modal-header h2 { font-size: 1.05rem; font-weight: 700; }
     .modal-close {
       background: none; border: none; color: white;
@@ -203,9 +204,11 @@
     .btn-submit {
       background: var(--green); color: white; border: none;
       padding: 0.5rem 1.25rem; border-radius: 6px;
-      font-size: 0.9rem; font-weight: 600; cursor: pointer;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.2s;
     }
     .btn-submit:hover { background: #235f3d; }
+    .modal.avoid-mode .btn-submit { background: var(--red); }
+    .modal.avoid-mode .btn-submit:hover { background: #8a2b2b; }
     .form-success {
       padding: 1.5rem 1.25rem; text-align: center;
       display: none; flex-direction: column; align-items: center; gap: 0.75rem;
@@ -548,6 +551,7 @@
   function openModal()  { backdrop.classList.add('open'); document.getElementById('biz-name').focus(); }
   function closeModal() {
     backdrop.classList.remove('open');
+    modalEl.classList.remove('avoid-mode');
     form.reset(); form.style.display = ''; successEl.style.display = 'none';
     newCatGrp.style.display = 'none'; rebuildCats('support');
   }
@@ -565,9 +569,12 @@
       '<option value="new">+ Add new category…</option>';
   }
 
+  const modalEl = document.querySelector('.modal');
+
   document.querySelectorAll('input[name="type"]').forEach(radio => {
     radio.addEventListener('change', () => {
       const isSup = radio.value === 'support';
+      modalEl.classList.toggle('avoid-mode', !isSup);
       whyLabel.innerHTML = (isSup ? 'Why support' : 'Why avoid') + ' this business? <span class="req">*</span>';
       whyInput.placeholder = isSup ? 'e.g. LGBTQ+ owned, donates to local causes…' : 'Intolerant, racist, sexist, affiliated with GCC…';
       rebuildCats(radio.value);
