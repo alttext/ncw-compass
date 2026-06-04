@@ -130,6 +130,74 @@
     .card.dismissed { opacity: 0; transform: translateX(30px); pointer-events: none; }
 
     .empty-state { text-align: center; padding: 3rem; color: #aaa; font-style: italic; }
+
+    /* ── Manage section ── */
+    .manage-section { margin-top: 2rem; }
+    .manage-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .manage-header h2 { font-size: 1rem; font-weight: 700; color: #333; }
+    .manage-group { margin-bottom: 1.5rem; }
+    .manage-group-label {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: #888; margin-bottom: 0.5rem; display: block;
+    }
+    .manage-row {
+      background: white; border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+      margin-bottom: 0.4rem; overflow: hidden;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .manage-row-main {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.65rem 1rem;
+    }
+    .manage-name { font-weight: 600; font-size: 0.9rem; flex: 1; min-width: 0; }
+    .manage-name a { color: var(--gray); text-decoration: none; }
+    .manage-name a:hover { color: var(--green); text-decoration: underline; }
+    .manage-why { font-size: 0.82rem; color: #777; flex: 2; min-width: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .manage-cat { flex-shrink: 0; }
+    .manage-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+    .btn-edit {
+      background: none; border: 1.5px solid #ccc; color: #555;
+      padding: 0.3rem 0.75rem; border-radius: 5px; font-size: 0.8rem; cursor: pointer;
+    }
+    .btn-edit:hover { border-color: var(--green); color: var(--green); }
+    .btn-del {
+      background: none; border: 1.5px solid #ddd; color: #aaa;
+      padding: 0.3rem 0.75rem; border-radius: 5px; font-size: 0.8rem; cursor: pointer;
+    }
+    .btn-del:hover { border-color: var(--red); color: var(--red); }
+
+    .edit-panel {
+      display: none; padding: 0.85rem 1rem 1rem;
+      border-top: 1px solid #f0f0f0; background: #fafafa;
+    }
+    .edit-panel.open { display: block; }
+    .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 0.75rem; }
+    .edit-field { display: flex; flex-direction: column; gap: 0.25rem; }
+    .edit-field.full { grid-column: 1 / -1; }
+    .edit-field label { font-size: 0.78rem; font-weight: 600; color: #555; }
+    .edit-field input, .edit-field textarea, .edit-field select {
+      padding: 0.45rem 0.75rem; border: 1.5px solid var(--border); border-radius: 5px;
+      font-size: 0.85rem; font-family: inherit; outline: none; background: white;
+    }
+    .edit-field input:focus, .edit-field textarea:focus, .edit-field select:focus { border-color: var(--green); }
+    .edit-field textarea { resize: vertical; }
+    .edit-footer { display: flex; gap: 0.5rem; justify-content: flex-end; }
+    .btn-save {
+      background: var(--green); color: white; border: none;
+      padding: 0.4rem 1rem; border-radius: 5px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    }
+    .btn-save:hover { background: #235f3d; }
+    .btn-save:disabled { background: #aaa; cursor: not-allowed; }
+    .btn-cancel-edit {
+      background: none; border: 1.5px solid #ccc; color: #555;
+      padding: 0.4rem 0.85rem; border-radius: 5px; font-size: 0.85rem; cursor: pointer;
+    }
+    .manage-row.dismissed { opacity: 0; transform: translateX(20px); pointer-events: none; }
   </style>
 </head>
 <body>
@@ -171,6 +239,14 @@
 
   <div class="status-bar" id="status"></div>
   <div id="submissions-list"></div>
+
+  <div class="manage-section">
+    <div class="manage-header">
+      <h2>Manage Existing Businesses</h2>
+      <button class="btn-load" id="load-manage-btn">Load Current List</button>
+    </div>
+    <div id="manage-list"></div>
+  </div>
 
 </div>
 
@@ -234,6 +310,7 @@
     const name = d['business-name'] || '(no name)';
     const why  = d.why || '';
     const cat  = d.category || '';
+    const url  = d.url || '';
     const date = new Date(sub.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const isSupport = type === 'support';
 
@@ -258,7 +335,7 @@
         ${isSupport ? `
         <div class="extra-field">
           <label>Website URL (optional)</label>
-          <input type="url" class="url-field" placeholder="https://…">
+          <input type="url" class="url-field" placeholder="https://…" value="${esc(url)}">
         </div>` : `
         <div class="extra-field">
           <label>GCC Affiliation type</label>
@@ -365,6 +442,167 @@
     return String(str)
       .replace(/&/g,'&amp;').replace(/</g,'&lt;')
       .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Manage existing businesses ──
+  const supportCatsManage = ['Food & Beverages','Retail & Services','Health','Legal','Finance','Media','Resources & Orgs','Faith Communities'];
+  const affilOpts = ['Community Reported','GCC Member-Owned','Freedom Con Vendor','Freedom Con Sponsor','James Campaign Donor'];
+
+  document.getElementById('load-manage-btn').addEventListener('click', async () => {
+    const listEl = document.getElementById('manage-list');
+    listEl.innerHTML = '<div class="empty-state">Loading…</div>';
+    try {
+      const res = await fetch('/index.html?_=' + Date.now());
+      const html = await res.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      listEl.innerHTML = '';
+      listEl.appendChild(buildManageGroup(doc, 'support-tbody', 'support'));
+      listEl.appendChild(buildManageGroup(doc, 'avoid-tbody', 'avoid'));
+    } catch (e) {
+      listEl.innerHTML = `<div class="empty-state">Failed to load: ${e.message}</div>`;
+    }
+  });
+
+  function buildManageGroup(doc, tbodyId, type) {
+    const isSupport = type === 'support';
+    const rows = doc.querySelectorAll(`#${tbodyId} tr`);
+    const group = document.createElement('div');
+    group.className = 'manage-group';
+    group.innerHTML = `<span class="manage-group-label">${isSupport ? '✅ Businesses to Support' : '⚠️ GCC-Affiliated Businesses'} (${rows.length})</span>`;
+    if (!rows.length) {
+      group.innerHTML += '<div class="empty-state" style="padding:1rem">No entries.</div>';
+      return group;
+    }
+    rows.forEach(tr => {
+      const tds = tr.querySelectorAll('td');
+      const firstTd = tds[0];
+      const anchor = firstTd?.querySelector('a');
+      const span   = firstTd?.querySelector('span.has-tip');
+      const name   = anchor?.textContent.trim() || span?.textContent.trim() || firstTd?.textContent.trim() || '';
+      const url    = anchor?.getAttribute('href') || '';
+      const why    = tds[1]?.textContent.trim() || '';
+      const cat    = tds[2]?.querySelector('.tag-cat')?.textContent.trim() || '';
+      const affil  = tr.getAttribute('data-cat') || '';
+      group.appendChild(buildManageRow({ name, url, why, cat, affil, isSupport, tbody: tbodyId }));
+    });
+    return group;
+  }
+
+  function buildManageRow({ name, url, why, cat, affil, isSupport, tbody }) {
+    const row = document.createElement('div');
+    row.className = 'manage-row';
+
+    const nameHtml = url
+      ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(name)}</a>`
+      : esc(name);
+
+    row.innerHTML = `
+      <div class="manage-row-main">
+        <span class="type-badge ${isSupport ? 'badge-support' : 'badge-avoid'}">${isSupport ? 'S' : 'A'}</span>
+        <span class="manage-name">${nameHtml}</span>
+        <span class="manage-why">${esc(why)}</span>
+        <span class="manage-cat"><span class="tag-cat">${esc(cat)}</span></span>
+        <span class="manage-actions">
+          <button class="btn-edit">Edit</button>
+          <button class="btn-del">Delete</button>
+        </span>
+      </div>
+      <div class="edit-panel">
+        <div class="edit-grid">
+          <div class="edit-field">
+            <label>Business name</label>
+            <input class="ep-name" type="text" value="${esc(name)}">
+          </div>
+          ${isSupport ? `
+          <div class="edit-field">
+            <label>Website URL</label>
+            <input class="ep-url" type="url" value="${esc(url)}" placeholder="https://…">
+          </div>` : `
+          <div class="edit-field">
+            <label>GCC Affiliation</label>
+            <select class="ep-affil">${affilOpts.map(o => `<option${o===affil?' selected':''}>${esc(o)}</option>`).join('')}</select>
+          </div>`}
+          <div class="edit-field full">
+            <label>${isSupport ? 'Why Support' : 'Why Avoid'}</label>
+            <textarea class="ep-why" rows="2">${esc(why)}</textarea>
+          </div>
+          <div class="edit-field">
+            <label>Category</label>
+            <select class="ep-cat">${supportCatsManage.map(o => `<option${o===cat?' selected':''}>${esc(o)}</option>`).join('')}</select>
+          </div>
+        </div>
+        <div class="edit-footer">
+          <button class="btn-cancel-edit">Cancel</button>
+          <button class="btn-save">Save Changes</button>
+        </div>
+      </div>`;
+
+    const editPanel = row.querySelector('.edit-panel');
+
+    row.querySelector('.btn-edit').addEventListener('click', () => {
+      editPanel.classList.toggle('open');
+    });
+    row.querySelector('.btn-cancel-edit').addEventListener('click', () => {
+      editPanel.classList.remove('open');
+    });
+
+    row.querySelector('.btn-del').addEventListener('click', async () => {
+      if (!confirm(`Delete "${name}"?`)) return;
+      const btn = row.querySelector('.btn-del');
+      btn.textContent = 'Deleting…'; btn.disabled = true;
+      try {
+        await callPublish({ action: 'delete', businessName: name, tbody });
+        row.classList.add('dismissed');
+        setTimeout(() => row.remove(), 350);
+        showToast(`"${name}" deleted — deploying in ~30s`);
+      } catch (e) {
+        btn.textContent = 'Delete'; btn.disabled = false;
+        showToast(e.message, true);
+      }
+    });
+
+    row.querySelector('.btn-save').addEventListener('click', async () => {
+      const saveBtn  = row.querySelector('.btn-save');
+      const newName  = row.querySelector('.ep-name').value.trim();
+      const newWhy   = row.querySelector('.ep-why').value.trim();
+      const newCat   = row.querySelector('.ep-cat').value;
+      const newUrl   = isSupport ? (row.querySelector('.ep-url')?.value.trim() || '') : '';
+      const newAffil = isSupport ? '' : (row.querySelector('.ep-affil')?.value || affil);
+      if (!newName) { showToast('Business name is required.', true); return; }
+      saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
+      const newSnippet = isSupport
+        ? buildSupportRow(newName, newWhy, newCat, newUrl)
+        : buildAvoidRow(newName, newWhy, newCat, newAffil);
+      try {
+        await callPublish({ action: 'edit', oldName: name, businessName: newName, tbody, snippet: newSnippet });
+        showToast(`"${newName}" updated — deploying in ~30s`);
+        row.classList.add('dismissed');
+        setTimeout(() => row.remove(), 350);
+      } catch (e) {
+        saveBtn.disabled = false; saveBtn.textContent = 'Save Changes';
+        showToast(e.message, true);
+      }
+    });
+
+    return row;
+  }
+
+  async function callPublish(payload) {
+    let res;
+    try {
+      res = await fetch('/.netlify/functions/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) {
+      throw new Error(`Network error: ${e.message}`);
+    }
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `Failed (${res.status})`);
+    }
   }
 </script>
 </body>

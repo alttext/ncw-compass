@@ -3,15 +3,16 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method not allowed' };
   }
 
-  let snippet, tbody, businessName;
+  let body;
   try {
-    ({ snippet, tbody, businessName } = JSON.parse(event.body));
+    body = JSON.parse(event.body);
   } catch {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request body' }) };
   }
 
+  const { action = 'add', snippet, tbody, businessName, oldName } = body;
   const token = process.env.GITHUB_TOKEN;
-  const repo  = process.env.GITHUB_REPO; // e.g. "benedwards/ncw-compass"
+  const repo  = process.env.GITHUB_REPO;
 
   if (!token || !repo) {
     return {
@@ -27,7 +28,7 @@ exports.handler = async (event) => {
     'User-Agent': 'ncw-compass-admin',
   };
 
-  // 1. Fetch current file from GitHub
+  // Fetch current file
   let fileRes;
   try {
     fileRes = await fetch(apiUrl, { headers });
@@ -39,27 +40,50 @@ exports.handler = async (event) => {
     return { statusCode: fileRes.status, body: JSON.stringify({ error: e.message || `GitHub ${fileRes.status}` }) };
   }
   const fileData = await fileRes.json();
-
-  // 2. Decode, inject new row, re-encode
   const currentHtml = Buffer.from(fileData.content.replace(/\n/g, ''), 'base64').toString('utf8');
 
-  const markerPos = currentHtml.indexOf(`id="${tbody}"`);
-  if (markerPos === -1) {
-    return { statusCode: 400, body: JSON.stringify({ error: `Could not find #${tbody} in index.html` }) };
-  }
-  const closePos = currentHtml.indexOf('</tbody>', markerPos);
-  const updatedHtml = currentHtml.slice(0, closePos) +
-    '        ' + snippet + '\n      ' +
-    currentHtml.slice(closePos);
+  let updatedHtml;
 
-  // 3. Commit back to GitHub
+  if (action === 'add') {
+    const markerPos = currentHtml.indexOf(`id="${tbody}"`);
+    if (markerPos === -1) return { statusCode: 400, body: JSON.stringify({ error: `Could not find #${tbody}` }) };
+    const closePos = currentHtml.indexOf('</tbody>', markerPos);
+    updatedHtml = currentHtml.slice(0, closePos) + '        ' + snippet + '\n      ' + currentHtml.slice(closePos);
+
+  } else if (action === 'delete') {
+    updatedHtml = removeRow(currentHtml, businessName);
+    if (updatedHtml === currentHtml) {
+      return { statusCode: 404, body: JSON.stringify({ error: `Could not find "${businessName}" in the list` }) };
+    }
+
+  } else if (action === 'edit') {
+    const nameToRemove = oldName || businessName;
+    const withoutOld = removeRow(currentHtml, nameToRemove);
+    if (withoutOld === currentHtml) {
+      return { statusCode: 404, body: JSON.stringify({ error: `Could not find "${nameToRemove}" to update` }) };
+    }
+    const markerPos = withoutOld.indexOf(`id="${tbody}"`);
+    if (markerPos === -1) return { statusCode: 400, body: JSON.stringify({ error: `Could not find #${tbody}` }) };
+    const closePos = withoutOld.indexOf('</tbody>', markerPos);
+    updatedHtml = withoutOld.slice(0, closePos) + '        ' + snippet + '\n      ' + withoutOld.slice(closePos);
+
+  } else {
+    return { statusCode: 400, body: JSON.stringify({ error: `Unknown action: ${action}` }) };
+  }
+
+  const commitMessage = action === 'delete'
+    ? `Remove business: ${businessName}`
+    : action === 'edit'
+      ? `Update business: ${businessName}`
+      : `Add approved business: ${businessName}`;
+
   let commitRes;
   try {
     commitRes = await fetch(apiUrl, {
       method: 'PUT',
       headers: { ...headers, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        message: `Add approved business: ${businessName}`,
+        message: commitMessage,
         content: Buffer.from(updatedHtml).toString('base64'),
         sha: fileData.sha,
       }),
@@ -74,3 +98,12 @@ exports.handler = async (event) => {
 
   return { statusCode: 200, body: JSON.stringify({ success: true }) };
 };
+
+function removeRow(html, businessName) {
+  const escaped = businessName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(
+    `[ \\t]*<tr[^>]*>(?:(?!<\\/tr>)[\\s\\S])*?${escaped}(?:(?!<\\/tr>)[\\s\\S])*?<\\/tr>\\n?`,
+    'i'
+  );
+  return html.replace(regex, '');
+}
