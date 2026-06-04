@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NCW Compass</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
@@ -249,24 +248,24 @@
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-header">
       <h2 id="modal-title">Suggest a Business</h2>
-      <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+      <button class="modal-close" id="modal-close" aria-label="Close">×</button>
     </div>
-    <form id="suggest-form" name="suggest" method="POST" netlify>
+    <form id="suggest-form" method="POST" name="suggest">
       <input type="hidden" name="form-name" value="suggest">
       <div class="form-group">
         <label>Type of suggestion</label>
         <div class="radio-group">
-          <label class="radio-label support-label"><input type="radio" name="type" value="support" required> To Support</label>
-          <label class="radio-label avoid-label"><input type="radio" name="type" value="avoid" required> To Avoid</label>
+          <label class="radio-label support-label"><input type="radio" name="type" value="support" required=""> To Support</label>
+          <label class="radio-label avoid-label"><input type="radio" name="type" value="avoid" required=""> To Avoid</label>
         </div>
       </div>
       <div class="form-group">
         <label for="biz-name">Business name <span class="req">*</span></label>
-        <input type="text" id="biz-name" name="business-name" required placeholder="e.g. Rosewood Café">
+        <input type="text" id="biz-name" name="business-name" required="" placeholder="e.g. Rosewood Café">
       </div>
       <div class="form-group">
         <label for="biz-why" id="why-label">Why support or avoid this business? <span class="req">*</span></label>
-        <textarea id="biz-why" name="why" rows="3" required placeholder="Select a type above, then describe why…"></textarea>
+        <textarea id="biz-why" name="why" rows="3" required="" placeholder="Select a type above, then describe why…"></textarea>
       </div>
       <div class="form-group">
         <label for="biz-cat">Category</label>
@@ -309,7 +308,7 @@
       Source: <a href="https://progressivedevilry.com/friends-of-stella/friends-of-stella-wenatchee/" target="_blank">Friends of Stella – Progressive Devilry</a>.
     </div>
     <div class="search-bar">
-      <input type="text" id="support-search" placeholder="Search businesses…"/>
+      <input type="text" id="support-search" placeholder="Search businesses…">
       <select id="support-cat">
         <option value="">All Categories</option>
         <option>Food &amp; Beverages</option>
@@ -398,7 +397,7 @@
         <tr data-cat="Faith Communities"><td><a href="https://www.newsongcc.org/" target="_blank" rel="noopener">New Song Community Church</a></td><td>Welcoming &amp; affirming church that supports equity and equality</td><td><span class="tag-cat">Faith Communities</span></td></tr>
         <tr data-cat="Faith Communities"><td><a href="http://www.cascadeuu.org/" target="_blank" rel="noopener">Cascade UU Fellowship</a></td><td>Welcoming &amp; affirming church that supports equity and equality</td><td><span class="tag-cat">Faith Communities</span></td></tr>
         <tr data-cat="Faith Communities"><td><a href="https://www.sunnyslopechurch.org/" target="_blank" rel="noopener">The Sunnyslope Church</a></td><td>Welcoming &amp; affirming church that supports equity and equality</td><td><span class="tag-cat">Faith Communities</span></td></tr>
-      </tbody>
+      <tr data-cat="Health"><td><a href="https://wenatcheeoutdoors.org/" target="_blank" rel="noopener">Wenatchee Outdoors</a></td><td>Advocates for local causes and is inclusive  that supports equity and equality</td><td><span class="tag-cat">Health</span></td></tr></tbody>
     </table>
     <div class="no-results" id="support-no-results">No results found.</div>
   </div>
@@ -412,7 +411,7 @@
       Source: <a href="https://dominickb.substack.com/p/introducing-the-list-a-resource-for" target="_blank">Dominick Bonny Reports</a>.
     </div>
     <div class="search-bar">
-      <input type="text" id="avoid-search" placeholder="Search businesses or owners…"/>
+      <input type="text" id="avoid-search" placeholder="Search businesses or owners…">
       <select id="avoid-cat">
         <option value="">All Affiliations</option>
         <option>GCC Member-Owned</option>
@@ -633,5 +632,6 @@
   });
 </script>
 
-</body>
-</html>
+
+
+</body></html>
