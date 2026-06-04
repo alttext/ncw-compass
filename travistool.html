@@ -469,7 +469,7 @@
     const rows = doc.querySelectorAll(`#${tbodyId} tr`);
     const group = document.createElement('div');
     group.className = 'manage-group';
-    group.innerHTML = `<span class="manage-group-label">${isSupport ? '✅ Businesses to Support' : '⚠️ GCC-Affiliated Businesses'} (${rows.length})</span>`;
+    group.innerHTML = `<span class="manage-group-label">${isSupport ? '✅ Businesses to Support' : '⚠️ Businesses to Avoid'} (${rows.length})</span>`;
     if (!rows.length) {
       group.innerHTML += '<div class="empty-state" style="padding:1rem">No entries.</div>';
       return group;
