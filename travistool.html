@@ -344,7 +344,8 @@
   }
 
   function buildAvoidRow(name, why, cat, affil) {
-    return `<tr data-cat="${esc(affil)}"><td>${esc(name)}</td><td>${esc(affil)}</td><td><span class="tag-cat">${esc(cat)}</span></td></tr>`;
+    const whyDisplay = why.length > 80 ? why.slice(0, 80).trimEnd() + '…' : why;
+    return `<tr data-cat="${esc(affil)}"><td>${esc(name)}</td><td>${esc(whyDisplay)}</td><td><span class="tag-cat">${esc(cat)}</span></td></tr>`;
   }
 
   // ── Delete Netlify submission ──

@@ -263,6 +263,10 @@
         <label for="biz-name">Business name <span class="req">*</span></label>
         <input type="text" id="biz-name" name="business-name" required="" placeholder="e.g. Rosewood Café">
       </div>
+      <div class="form-group" id="url-group" style="display:none">
+        <label for="biz-url">Website URL (optional)</label>
+        <input type="url" id="biz-url" name="url" placeholder="https://…">
+      </div>
       <div class="form-group">
         <label for="biz-why" id="why-label">Why support or avoid this business? <span class="req">*</span></label>
         <textarea id="biz-why" name="why" rows="3" required="" placeholder="Select a type above, then describe why…"></textarea>
@@ -569,7 +573,7 @@
     backdrop.classList.remove('open');
     modalEl.classList.remove('avoid-mode');
     form.reset(); form.style.display = ''; successEl.style.display = 'none';
-    newCatGrp.style.display = 'none'; rebuildCats('support');
+    newCatGrp.style.display = 'none'; urlGroup.style.display = 'none'; rebuildCats('support');
   }
 
   document.querySelectorAll('.open-suggest').forEach(btn => btn.addEventListener('click', () => openModal(btn.dataset.type)));
@@ -585,12 +589,14 @@
       '<option value="new">+ Add new category…</option>';
   }
 
-  const modalEl = document.querySelector('.modal');
+  const modalEl  = document.querySelector('.modal');
+  const urlGroup = document.getElementById('url-group');
 
   document.querySelectorAll('input[name="type"]').forEach(radio => {
     radio.addEventListener('change', () => {
       const isSup = radio.value === 'support';
       modalEl.classList.toggle('avoid-mode', !isSup);
+      urlGroup.style.display = isSup ? '' : 'none';
       whyLabel.innerHTML = (isSup ? 'Why support' : 'Why avoid') + ' this business? <span class="req">*</span>';
       whyInput.placeholder = isSup ? 'e.g. LGBTQ+ owned, donates to local causes…' : 'Intolerant, racist, sexist, affiliated with GCC…';
       rebuildCats(radio.value);
