@@ -322,7 +322,7 @@
         <option>Faith Communities</option>
       </select>
       <span class="result-count" id="support-count"></span>
-      <button class="suggest-btn open-suggest">+ Suggest a Business</button>
+      <button class="suggest-btn open-suggest" data-type="support">+ Suggest a Business</button>
     </div>
     <table class="support-table" id="support-table">
       <thead><tr><th>Business</th><th>Why Support</th><th>Category</th></tr></thead>
@@ -421,7 +421,7 @@
         <option>James Campaign Donor</option>
       </select>
       <span class="result-count" id="avoid-count"></span>
-      <button class="suggest-btn open-suggest">+ Suggest a Business</button>
+      <button class="suggest-btn open-suggest" data-type="avoid">+ Suggest a Business</button>
     </div>
     <table class="avoid-table" id="avoid-table">
       <thead><tr><th>Business</th><th>Why Avoid</th><th>Category</th></tr></thead>
@@ -555,7 +555,14 @@
   const newCatGrp  = document.getElementById('new-cat-group');
   const newCatInp  = document.getElementById('biz-cat-new');
 
-  function openModal()  { backdrop.classList.add('open'); document.getElementById('biz-name').focus(); }
+  function openModal(type) {
+    backdrop.classList.add('open');
+    if (type) {
+      const radio = form.querySelector(`input[name="type"][value="${type}"]`);
+      if (radio) { radio.checked = true; radio.dispatchEvent(new Event('change')); }
+    }
+    document.getElementById('biz-name').focus();
+  }
   function closeModal() {
     backdrop.classList.remove('open');
     modalEl.classList.remove('avoid-mode');
@@ -563,7 +570,7 @@
     newCatGrp.style.display = 'none'; rebuildCats('support');
   }
 
-  document.querySelectorAll('.open-suggest').forEach(btn => btn.addEventListener('click', openModal));
+  document.querySelectorAll('.open-suggest').forEach(btn => btn.addEventListener('click', () => openModal(btn.dataset.type)));
   document.getElementById('modal-close').addEventListener('click', closeModal);
   document.getElementById('modal-cancel').addEventListener('click', closeModal);
   document.getElementById('success-close').addEventListener('click', closeModal);
