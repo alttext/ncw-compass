@@ -244,7 +244,7 @@
       <h2 id="modal-title">Suggest a Business</h2>
       <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
     </div>
-    <form id="suggest-form" name="suggest" netlify>
+    <form id="suggest-form" name="suggest" method="POST" netlify>
       <input type="hidden" name="form-name" value="suggest">
       <div class="form-group">
         <label>Type of suggestion</label>
@@ -589,16 +589,13 @@
 
   form.addEventListener('submit', e => {
     e.preventDefault();
-    const type = form.querySelector('input[name="type"]:checked').value;
-    const cat  = catSelect.value === 'new' ? newCatInp.value.trim() : catSelect.value;
-    const data = new URLSearchParams({
-      'form-name':    'suggest',
-      'type':         type,
-      'business-name': document.getElementById('biz-name').value.trim(),
-      'why':          whyInput.value.trim(),
-      'category':     cat,
-    });
-    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: data.toString() })
+    const formData = new FormData(form);
+    if (catSelect.value === 'new') formData.set('category', newCatInp.value.trim());
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(formData).toString()
+    })
       .then(() => { form.style.display = 'none'; successEl.style.display = 'flex'; })
       .catch(() => { alert('Something went wrong — please try again.'); });
   });
