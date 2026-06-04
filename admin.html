@@ -160,14 +160,11 @@
 
     <div class="setup-section">
       <span class="setup-label">GitHub — publish approvals</span>
-      <div class="setup-fields">
-        <input type="password" id="gh-token" placeholder="Fine-grained Access Token" autocomplete="off">
-        <input type="text"     id="gh-repo"  placeholder="owner/repo  (e.g. ben/ncw-compass)">
-      </div>
       <p class="setup-hint">
-        <a href="https://github.com/settings/personal-access-tokens/new" target="_blank">Create a fine-grained token</a>
-        scoped to this repo with <strong>Contents: Read and write</strong>.
-        Approvals commit directly to main → Netlify auto-redeploys (~30s).
+        Approvals commit directly to GitHub via a server-side function — no token needed here.<br>
+        Set <strong>GITHUB_TOKEN</strong> and <strong>GITHUB_REPO</strong> (e.g. <code>owner/ncw-compass</code>)
+        in <a href="https://app.netlify.com" target="_blank">Netlify → Site configuration → Environment variables</a>,
+        then redeploy once. After that, approvals go live in ~30s automatically.
       </p>
     </div>
   </div>
@@ -182,18 +179,12 @@
 <script>
   const NL_TOKEN_KEY = 'ncw_nl_token';
   const SITE_KEY     = 'ncw_site_id';
-  const GH_TOKEN_KEY = 'ncw_gh_token';
-  const GH_REPO_KEY  = 'ncw_gh_repo';
 
   const nlTokenEl = document.getElementById('netlify-token');
   const siteEl    = document.getElementById('site-id');
-  const ghTokenEl = document.getElementById('gh-token');
-  const ghRepoEl  = document.getElementById('gh-repo');
 
   nlTokenEl.value = localStorage.getItem(NL_TOKEN_KEY) || '';
   siteEl.value    = localStorage.getItem(SITE_KEY)     || '';
-  ghTokenEl.value = localStorage.getItem(GH_TOKEN_KEY) || '';
-  ghRepoEl.value  = localStorage.getItem(GH_REPO_KEY)  || '';
 
   // ── Toast ──
   let toastTimer;
@@ -323,66 +314,21 @@
     return card;
   }
 
-  // ── GitHub commit ──
+  // ── Publish via Netlify Function ──
   async function commitToGitHub(snippet, tbody, businessName) {
-    const token = ghTokenEl.value.trim() || localStorage.getItem(GH_TOKEN_KEY) || '';
-    const repo  = ghRepoEl.value.trim()  || localStorage.getItem(GH_REPO_KEY)  || '';
-    if (!token || !repo) throw new Error('GitHub token and repo are required to publish.');
-    localStorage.setItem(GH_TOKEN_KEY, token);
-    localStorage.setItem(GH_REPO_KEY, repo);
-
-    // GET must NOT include Content-Type — it triggers a CORS preflight GitHub rejects
-    const getHeaders = {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.github.v3+json',
-    };
-    const putHeaders = {
-      ...getHeaders,
-      'Content-Type': 'application/json',
-    };
-
-    // Fetch current file
-    let fileRes;
+    let res;
     try {
-      fileRes = await fetch(`https://api.github.com/repos/${repo}/contents/index.html`, { headers: getHeaders });
-    } catch (e) {
-      throw new Error(`Network error fetching from GitHub — check your token and repo name (${e.message})`);
-    }
-    if (!fileRes.ok) {
-      const e = await fileRes.json().catch(() => ({}));
-      throw new Error(e.message || `GitHub ${fileRes.status}: could not fetch index.html`);
-    }
-    const fileData = await fileRes.json();
-
-    // Decode → inject → re-encode
-    const current = fromBase64(fileData.content.replace(/\n/g, ''));
-    const parser  = new DOMParser();
-    const doc     = parser.parseFromString(current, 'text/html');
-    const tbodyEl = doc.getElementById(tbody);
-    if (!tbodyEl) throw new Error(`Could not find #${tbody} in index.html`);
-    const tmp = doc.createElement('tbody');
-    tmp.innerHTML = snippet;
-    tbodyEl.appendChild(tmp.firstElementChild);
-    const updated = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
-
-    // Commit
-    let commitRes;
-    try {
-      commitRes = await fetch(`https://api.github.com/repos/${repo}/contents/index.html`, {
-        method: 'PUT',
-        headers: putHeaders,
-        body: JSON.stringify({
-          message: `Add approved business: ${businessName}`,
-          content: toBase64(updated),
-          sha: fileData.sha
-        })
+      res = await fetch('/.netlify/functions/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ snippet, tbody, businessName })
       });
     } catch (e) {
-      throw new Error(`Network error committing to GitHub — ${e.message}`);
+      throw new Error(`Could not reach the publish function — are you on the deployed site? (${e.message})`);
     }
-    if (!commitRes.ok) {
-      const e = await commitRes.json().catch(() => ({}));
-      throw new Error(e.message || `GitHub commit failed (${commitRes.status})`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `Publish failed (${res.status})`);
     }
   }
 
@@ -412,19 +358,6 @@
     card.classList.add('dismissed');
     setTimeout(() => card.remove(), 350);
     if (toastMsg) showToast(toastMsg);
-  }
-
-  // ── Base64 helpers (UTF-8 safe) ──
-  function toBase64(str) {
-    const bytes = new TextEncoder().encode(str);
-    let bin = '';
-    bytes.forEach(b => bin += String.fromCharCode(b));
-    return btoa(bin);
-  }
-  function fromBase64(b64) {
-    const bin   = atob(b64);
-    const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
-    return new TextDecoder().decode(bytes);
   }
 
   function esc(str) {
