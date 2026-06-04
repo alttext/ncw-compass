@@ -325,20 +325,29 @@
 
   // ── GitHub commit ──
   async function commitToGitHub(snippet, tbody, businessName) {
-    const token = ghTokenEl.value.trim();
-    const repo  = ghRepoEl.value.trim();
+    const token = ghTokenEl.value.trim() || localStorage.getItem(GH_TOKEN_KEY) || '';
+    const repo  = ghRepoEl.value.trim()  || localStorage.getItem(GH_REPO_KEY)  || '';
     if (!token || !repo) throw new Error('GitHub token and repo are required to publish.');
     localStorage.setItem(GH_TOKEN_KEY, token);
     localStorage.setItem(GH_REPO_KEY, repo);
 
-    const headers = {
+    // GET must NOT include Content-Type — it triggers a CORS preflight GitHub rejects
+    const getHeaders = {
       Authorization: `Bearer ${token}`,
       Accept: 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
+    };
+    const putHeaders = {
+      ...getHeaders,
+      'Content-Type': 'application/json',
     };
 
     // Fetch current file
-    const fileRes = await fetch(`https://api.github.com/repos/${repo}/contents/index.html`, { headers });
+    let fileRes;
+    try {
+      fileRes = await fetch(`https://api.github.com/repos/${repo}/contents/index.html`, { headers: getHeaders });
+    } catch (e) {
+      throw new Error(`Network error fetching from GitHub — check your token and repo name (${e.message})`);
+    }
     if (!fileRes.ok) {
       const e = await fileRes.json().catch(() => ({}));
       throw new Error(e.message || `GitHub ${fileRes.status}: could not fetch index.html`);
@@ -357,15 +366,20 @@
     const updated = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
 
     // Commit
-    const commitRes = await fetch(`https://api.github.com/repos/${repo}/contents/index.html`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify({
-        message: `Add approved business: ${businessName}`,
-        content: toBase64(updated),
-        sha: fileData.sha
-      })
-    });
+    let commitRes;
+    try {
+      commitRes = await fetch(`https://api.github.com/repos/${repo}/contents/index.html`, {
+        method: 'PUT',
+        headers: putHeaders,
+        body: JSON.stringify({
+          message: `Add approved business: ${businessName}`,
+          content: toBase64(updated),
+          sha: fileData.sha
+        })
+      });
+    } catch (e) {
+      throw new Error(`Network error committing to GitHub — ${e.message}`);
+    }
     if (!commitRes.ok) {
       const e = await commitRes.json().catch(() => ({}));
       throw new Error(e.message || `GitHub commit failed (${commitRes.status})`);
