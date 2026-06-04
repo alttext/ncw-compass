@@ -34,10 +34,15 @@
       background: white; border-radius: 8px; padding: 1.25rem;
       box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin-bottom: 1.5rem;
     }
-    .setup-panel h2 { font-size: 0.9rem; font-weight: 700; margin-bottom: 1rem; color: #333; }
+    .setup-section { margin-bottom: 1rem; }
+    .setup-section:last-child { margin-bottom: 0; }
+    .setup-label {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: #888; margin-bottom: 0.5rem; display: block;
+    }
     .setup-fields { display: flex; gap: 0.75rem; flex-wrap: wrap; }
     .setup-fields input {
-      flex: 1; min-width: 180px; padding: 0.55rem 0.85rem;
+      flex: 1; min-width: 160px; padding: 0.55rem 0.85rem;
       border: 1.5px solid var(--border); border-radius: 6px;
       font-size: 0.9rem; font-family: inherit; outline: none;
     }
@@ -45,11 +50,23 @@
     .btn-load {
       background: var(--green); color: white; border: none;
       padding: 0.55rem 1.25rem; border-radius: 6px;
-      font-size: 0.9rem; font-weight: 600; cursor: pointer;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap;
     }
     .btn-load:hover { background: #235f3d; }
-    .setup-hint { font-size: 0.78rem; color: #888; margin-top: 0.6rem; line-height: 1.5; }
+    .setup-hint { font-size: 0.78rem; color: #999; margin-top: 0.5rem; line-height: 1.5; }
     .setup-hint a { color: var(--green); }
+    .setup-divider { border: none; border-top: 1px solid #f0f0f0; margin: 1rem 0; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      background: #1a3a28; color: white; padding: 0.7rem 1.25rem;
+      border-radius: 8px; font-size: 0.88rem; font-weight: 500;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2); z-index: 200;
+      opacity: 0; transition: opacity 0.2s; pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+    .toast.error { background: var(--red); }
 
     /* Status */
     .status-bar { font-size: 0.85rem; color: #666; margin-bottom: 1rem; min-height: 1.2em; }
@@ -59,6 +76,7 @@
       background: white; border-radius: 8px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.08);
       margin-bottom: 1rem; overflow: hidden;
+      transition: opacity 0.3s, transform 0.3s;
     }
     .card-header {
       padding: 0.85rem 1.1rem;
@@ -77,7 +95,7 @@
 
     .card-body { padding: 0.9rem 1.1rem; display: flex; flex-direction: column; gap: 0.6rem; }
     .field-row { display: flex; gap: 0.5rem; font-size: 0.88rem; }
-    .field-label { font-weight: 600; color: #555; min-width: 80px; }
+    .field-label { font-weight: 600; color: #555; min-width: 80px; flex-shrink: 0; }
     .field-value { color: #333; }
 
     .extra-field { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.25rem; }
@@ -92,8 +110,9 @@
 
     .card-footer {
       padding: 0.75rem 1.1rem; border-top: 1px solid #f0f0f0;
-      display: flex; gap: 0.6rem; justify-content: flex-end;
+      display: flex; gap: 0.6rem; justify-content: flex-end; align-items: center;
     }
+    .card-status { font-size: 0.82rem; color: #888; margin-right: auto; }
     .btn-deny {
       background: none; border: 1.5px solid #ddd; color: #888;
       padding: 0.45rem 1rem; border-radius: 6px; font-size: 0.88rem; cursor: pointer;
@@ -105,56 +124,12 @@
       font-size: 0.88rem; font-weight: 600; cursor: pointer;
     }
     .btn-approve:hover { background: #235f3d; }
+    .btn-approve:disabled { background: #aaa; cursor: not-allowed; }
     .card.avoid-card .btn-approve { background: var(--red); }
     .card.avoid-card .btn-approve:hover { background: #8a2b2b; }
-
-    /* Snippet modal */
-    .modal-backdrop {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.45); z-index: 100;
-      align-items: center; justify-content: center; padding: 1rem;
-    }
-    .modal-backdrop.open { display: flex; }
-    .modal {
-      background: white; border-radius: 10px; width: 100%; max-width: 640px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2); overflow: hidden;
-    }
-    .modal-head {
-      background: linear-gradient(135deg, #1a3a28, #2d7a4f);
-      color: white; padding: 1rem 1.25rem;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .modal-head h2 { font-size: 1rem; font-weight: 700; }
-    .modal-close { background: none; border: none; color: white; font-size: 1.4rem; cursor: pointer; opacity: 0.8; }
-    .modal-close:hover { opacity: 1; }
-    .modal-body { padding: 1.25rem; }
-    .modal-body p { font-size: 0.88rem; color: #555; margin-bottom: 0.75rem; line-height: 1.5; }
-    .snippet-box {
-      background: #f7f7f7; border: 1.5px solid var(--border); border-radius: 6px;
-      padding: 0.85rem; font-family: 'Courier New', monospace; font-size: 0.75rem;
-      word-break: break-all; line-height: 1.6; color: #333;
-      max-height: 160px; overflow-y: auto; margin-bottom: 0.85rem;
-    }
-    .modal-actions { display: flex; gap: 0.6rem; justify-content: flex-end; }
-    .btn-copy {
-      background: var(--green); color: white; border: none;
-      padding: 0.5rem 1.25rem; border-radius: 6px;
-      font-size: 0.88rem; font-weight: 600; cursor: pointer;
-    }
-    .btn-copy:hover { background: #235f3d; }
-    .btn-download {
-      background: #1a3a28; color: white; border: none;
-      padding: 0.5rem 1.25rem; border-radius: 6px;
-      font-size: 0.88rem; font-weight: 600; cursor: pointer;
-    }
-    .btn-download:hover { background: #0f2318; }
-    .btn-close-modal {
-      background: none; border: 1.5px solid #ccc; color: #555;
-      padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.88rem; cursor: pointer;
-    }
+    .card.dismissed { opacity: 0; transform: translateX(30px); pointer-events: none; }
 
     .empty-state { text-align: center; padding: 3rem; color: #aaa; font-style: italic; }
-    .card.dismissed { opacity: 0; transform: translateX(30px); transition: all 0.3s; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -168,16 +143,33 @@
 <div class="container">
 
   <div class="setup-panel">
-    <h2>Netlify Connection</h2>
-    <div class="setup-fields">
-      <input type="password" id="api-token" placeholder="Personal Access Token" autocomplete="off">
-      <input type="text" id="site-id" placeholder="Site ID">
-      <button class="btn-load" id="load-btn">Load Submissions</button>
+    <div class="setup-section">
+      <span class="setup-label">Netlify — load submissions</span>
+      <div class="setup-fields">
+        <input type="password" id="netlify-token" placeholder="Personal Access Token" autocomplete="off">
+        <input type="text"     id="site-id"       placeholder="Site ID">
+        <button class="btn-load" id="load-btn">Load Submissions</button>
+      </div>
+      <p class="setup-hint">
+        <a href="https://app.netlify.com/user/applications#personal-access-tokens" target="_blank">Get Netlify token</a> ·
+        Site ID is under <strong>Site configuration → General</strong>.
+      </p>
     </div>
-    <p class="setup-hint">
-      Get your <a href="https://app.netlify.com/user/applications#personal-access-tokens" target="_blank">Personal Access Token</a> from Netlify user settings.
-      Your Site ID is under <strong>Site configuration → General</strong>. Both are saved in your browser.
-    </p>
+
+    <hr class="setup-divider">
+
+    <div class="setup-section">
+      <span class="setup-label">GitHub — publish approvals</span>
+      <div class="setup-fields">
+        <input type="password" id="gh-token" placeholder="Fine-grained Access Token" autocomplete="off">
+        <input type="text"     id="gh-repo"  placeholder="owner/repo  (e.g. ben/ncw-compass)">
+      </div>
+      <p class="setup-hint">
+        <a href="https://github.com/settings/personal-access-tokens/new" target="_blank">Create a fine-grained token</a>
+        scoped to this repo with <strong>Contents: Read and write</strong>.
+        Approvals commit directly to main → Netlify auto-redeploys (~30s).
+      </p>
+    </div>
   </div>
 
   <div class="status-bar" id="status"></div>
@@ -185,102 +177,44 @@
 
 </div>
 
-<!-- Snippet modal -->
-<div class="modal-backdrop" id="snippet-modal">
-  <div class="modal">
-    <div class="modal-head">
-      <h2>Approved — Add to List</h2>
-      <button class="modal-close" id="snippet-close">&times;</button>
-    </div>
-    <div class="modal-body">
-      <p>Copy this snippet and paste it inside the correct <code>&lt;tbody&gt;</code> in <strong>index.html</strong>, then redeploy. Or use <em>Download Updated index.html</em> to have it inserted automatically.</p>
-      <div class="snippet-box" id="snippet-box"></div>
-      <div class="modal-actions">
-        <button class="btn-close-modal" id="snippet-cancel">Close</button>
-        <button class="btn-copy" id="snippet-copy">Copy Snippet</button>
-        <button class="btn-download" id="snippet-download">Download Updated index.html</button>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="toast" id="toast"></div>
 
 <script>
-  const TOKEN_KEY = 'ncw_admin_token';
-  const SITE_KEY  = 'ncw_admin_site';
+  const NL_TOKEN_KEY = 'ncw_nl_token';
+  const SITE_KEY     = 'ncw_site_id';
+  const GH_TOKEN_KEY = 'ncw_gh_token';
+  const GH_REPO_KEY  = 'ncw_gh_repo';
 
-  const tokenEl  = document.getElementById('api-token');
-  const siteEl   = document.getElementById('site-id');
-  const loadBtn  = document.getElementById('load-btn');
-  const statusEl = document.getElementById('status');
-  const listEl   = document.getElementById('submissions-list');
+  const nlTokenEl = document.getElementById('netlify-token');
+  const siteEl    = document.getElementById('site-id');
+  const ghTokenEl = document.getElementById('gh-token');
+  const ghRepoEl  = document.getElementById('gh-repo');
 
-  // Restore saved values
-  tokenEl.value = localStorage.getItem(TOKEN_KEY) || '';
-  siteEl.value  = localStorage.getItem(SITE_KEY)  || '';
+  nlTokenEl.value = localStorage.getItem(NL_TOKEN_KEY) || '';
+  siteEl.value    = localStorage.getItem(SITE_KEY)     || '';
+  ghTokenEl.value = localStorage.getItem(GH_TOKEN_KEY) || '';
+  ghRepoEl.value  = localStorage.getItem(GH_REPO_KEY)  || '';
 
-  // ── Snippet modal ──
-  const modal         = document.getElementById('snippet-modal');
-  const snippetBox    = document.getElementById('snippet-box');
-  const snippetCopy   = document.getElementById('snippet-copy');
-  const snippetDl     = document.getElementById('snippet-download');
-  const snippetClose  = document.getElementById('snippet-close');
-  const snippetCancel = document.getElementById('snippet-cancel');
-
-  let currentSnippet = '';
-  let currentTbody   = '';  // 'support-tbody' or 'avoid-tbody'
-
-  function openSnippet(snippet, tbody) {
-    currentSnippet = snippet;
-    currentTbody   = tbody;
-    snippetBox.textContent = snippet;
-    modal.classList.add('open');
+  // ── Toast ──
+  let toastTimer;
+  function showToast(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (isError ? ' error' : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.classList.remove('show'); }, 4000);
   }
-  function closeSnippet() { modal.classList.remove('open'); }
-  snippetClose.addEventListener('click', closeSnippet);
-  snippetCancel.addEventListener('click', closeSnippet);
-  modal.addEventListener('click', e => { if (e.target === modal) closeSnippet(); });
-
-  snippetCopy.addEventListener('click', () => {
-    navigator.clipboard.writeText(currentSnippet).then(() => {
-      snippetCopy.textContent = 'Copied!';
-      setTimeout(() => { snippetCopy.textContent = 'Copy Snippet'; }, 2000);
-    });
-  });
-
-  snippetDl.addEventListener('click', async () => {
-    snippetDl.textContent = 'Fetching…';
-    try {
-      const res  = await fetch('/index.html');
-      const html = await res.text();
-      const parser = new DOMParser();
-      const doc    = parser.parseFromString(html, 'text/html');
-      const tbody  = doc.getElementById(currentTbody);
-      if (!tbody) throw new Error(`Could not find #${currentTbody} in index.html`);
-      const tmp = doc.createElement('tbody');
-      tmp.innerHTML = currentSnippet;
-      tbody.appendChild(tmp.firstElementChild);
-      const serialized = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
-      const blob = new Blob([serialized], { type: 'text/html' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'index.html';
-      a.click();
-      snippetDl.textContent = 'Downloaded!';
-      setTimeout(() => { snippetDl.textContent = 'Download Updated index.html'; }, 3000);
-    } catch (err) {
-      alert('Download failed: ' + err.message);
-      snippetDl.textContent = 'Download Updated index.html';
-    }
-  });
 
   // ── Load submissions ──
-  loadBtn.addEventListener('click', async () => {
-    const token  = tokenEl.value.trim();
+  document.getElementById('load-btn').addEventListener('click', async () => {
+    const token  = nlTokenEl.value.trim();
     const siteId = siteEl.value.trim();
-    if (!token || !siteId) { alert('Please enter both your API token and Site ID.'); return; }
-    localStorage.setItem(TOKEN_KEY, token);
+    if (!token || !siteId) { showToast('Enter your Netlify token and Site ID.', true); return; }
+    localStorage.setItem(NL_TOKEN_KEY, token);
     localStorage.setItem(SITE_KEY, siteId);
 
+    const statusEl = document.getElementById('status');
+    const listEl   = document.getElementById('submissions-list');
     statusEl.textContent = 'Loading…';
     listEl.innerHTML = '';
 
@@ -288,22 +222,22 @@
       const res  = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}/submissions?per_page=100`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (!res.ok) throw new Error(`Netlify API error: ${res.status} ${res.statusText}`);
+      if (!res.ok) throw new Error(`Netlify API ${res.status}: ${res.statusText}`);
       const all  = await res.json();
       const subs = all.filter(s => s.form_name === 'suggest');
-      statusEl.textContent = subs.length ? `${subs.length} pending submission${subs.length !== 1 ? 's' : ''}` : '';
-      if (!subs.length) {
-        listEl.innerHTML = '<div class="empty-state">No pending submissions.</div>';
-        return;
-      }
-      subs.forEach(sub => listEl.appendChild(buildCard(sub, token)));
+      statusEl.textContent = subs.length
+        ? `${subs.length} pending submission${subs.length !== 1 ? 's' : ''}`
+        : '';
+      listEl.innerHTML = subs.length ? '' : '<div class="empty-state">No pending submissions.</div>';
+      subs.forEach(sub => listEl.appendChild(buildCard(sub)));
     } catch (err) {
-      statusEl.textContent = 'Error: ' + err.message;
+      statusEl.textContent = '';
+      showToast(err.message, true);
     }
   });
 
   // ── Build card ──
-  function buildCard(sub, token) {
+  function buildCard(sub) {
     const d    = sub.data || {};
     const type = d.type || 'support';
     const name = d['business-name'] || '(no name)';
@@ -314,7 +248,6 @@
 
     const card = document.createElement('div');
     card.className = 'card' + (isSupport ? '' : ' avoid-card');
-    card.dataset.id = sub.id;
 
     card.innerHTML = `
       <div class="card-header">
@@ -323,8 +256,14 @@
         <span class="card-date">${date}</span>
       </div>
       <div class="card-body">
-        <div class="field-row"><span class="field-label">${isSupport ? 'Why Support' : 'Why Avoid'}</span><span class="field-value">${esc(why)}</span></div>
-        <div class="field-row"><span class="field-label">Category</span><span class="field-value">${esc(cat)}</span></div>
+        <div class="field-row">
+          <span class="field-label">${isSupport ? 'Why Support' : 'Why Avoid'}</span>
+          <span class="field-value">${esc(why)}</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Category</span>
+          <span class="field-value">${esc(cat)}</span>
+        </div>
         ${isSupport ? `
         <div class="extra-field">
           <label>Website URL (optional)</label>
@@ -342,22 +281,95 @@
         </div>`}
       </div>
       <div class="card-footer">
+        <span class="card-status"></span>
         <button class="btn-deny">✕ Deny</button>
-        <button class="btn-approve">✓ Approve</button>
+        <button class="btn-approve">✓ Approve &amp; Publish</button>
       </div>`;
 
-    card.querySelector('.btn-deny').addEventListener('click', () => deleteSubmission(sub.id, token, card));
+    const nlToken = nlTokenEl.value.trim();
 
-    card.querySelector('.btn-approve').addEventListener('click', () => {
-      const url    = isSupport ? (card.querySelector('.url-field')?.value.trim() || '') : '';
-      const affil  = isSupport ? '' : (card.querySelector('.affil-field')?.value || 'Community Reported');
+    card.querySelector('.btn-deny').addEventListener('click', () =>
+      deleteSubmission(sub.id, nlToken, card, 'Submission denied.')
+    );
+
+    card.querySelector('.btn-approve').addEventListener('click', async () => {
+      const url   = isSupport ? (card.querySelector('.url-field')?.value.trim() || '') : '';
+      const affil = isSupport ? '' : (card.querySelector('.affil-field')?.value || 'Community Reported');
       const snippet = isSupport ? buildSupportRow(name, why, cat, url) : buildAvoidRow(name, why, cat, affil);
       const tbody   = isSupport ? 'support-tbody' : 'avoid-tbody';
-      deleteSubmission(sub.id, token, card, false);
-      openSnippet(snippet, tbody);
+
+      const approveBtn  = card.querySelector('.btn-approve');
+      const denyBtn     = card.querySelector('.btn-deny');
+      const cardStatus  = card.querySelector('.card-status');
+
+      approveBtn.disabled = true;
+      denyBtn.disabled    = true;
+      approveBtn.textContent = 'Publishing…';
+      cardStatus.textContent = '';
+
+      try {
+        await commitToGitHub(snippet, tbody, name);
+        await deleteSubmission(sub.id, nlToken, card, null);
+        showToast(`✓ "${name}" published — deploying in ~30s`);
+      } catch (err) {
+        approveBtn.disabled = false;
+        denyBtn.disabled    = false;
+        approveBtn.textContent = '✓ Approve & Publish';
+        cardStatus.textContent = '⚠ ' + err.message;
+        showToast(err.message, true);
+      }
     });
 
     return card;
+  }
+
+  // ── GitHub commit ──
+  async function commitToGitHub(snippet, tbody, businessName) {
+    const token = ghTokenEl.value.trim();
+    const repo  = ghRepoEl.value.trim();
+    if (!token || !repo) throw new Error('GitHub token and repo are required to publish.');
+    localStorage.setItem(GH_TOKEN_KEY, token);
+    localStorage.setItem(GH_REPO_KEY, repo);
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    };
+
+    // Fetch current file
+    const fileRes = await fetch(`https://api.github.com/repos/${repo}/contents/index.html`, { headers });
+    if (!fileRes.ok) {
+      const e = await fileRes.json().catch(() => ({}));
+      throw new Error(e.message || `GitHub ${fileRes.status}: could not fetch index.html`);
+    }
+    const fileData = await fileRes.json();
+
+    // Decode → inject → re-encode
+    const current = fromBase64(fileData.content.replace(/\n/g, ''));
+    const parser  = new DOMParser();
+    const doc     = parser.parseFromString(current, 'text/html');
+    const tbodyEl = doc.getElementById(tbody);
+    if (!tbodyEl) throw new Error(`Could not find #${tbody} in index.html`);
+    const tmp = doc.createElement('tbody');
+    tmp.innerHTML = snippet;
+    tbodyEl.appendChild(tmp.firstElementChild);
+    const updated = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+
+    // Commit
+    const commitRes = await fetch(`https://api.github.com/repos/${repo}/contents/index.html`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({
+        message: `Add approved business: ${businessName}`,
+        content: toBase64(updated),
+        sha: fileData.sha
+      })
+    });
+    if (!commitRes.ok) {
+      const e = await commitRes.json().catch(() => ({}));
+      throw new Error(e.message || `GitHub commit failed (${commitRes.status})`);
+    }
   }
 
   // ── Row generators ──
@@ -365,7 +377,9 @@
     const nameCell = url
       ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(name)}</a>`
       : esc(name);
-    const whyFull = why.endsWith('that supports equity and equality') ? esc(why) : `${esc(why)} that supports equity and equality`;
+    const whyFull = why.toLowerCase().includes('equity and equality')
+      ? esc(why)
+      : `${esc(why)} that supports equity and equality`;
     return `<tr data-cat="${esc(cat)}"><td>${nameCell}</td><td>${whyFull}</td><td><span class="tag-cat">${esc(cat)}</span></td></tr>`;
   }
 
@@ -373,25 +387,36 @@
     return `<tr data-cat="${esc(affil)}"><td>${esc(name)}</td><td>${esc(affil)}</td><td><span class="tag-cat">${esc(cat)}</span></td></tr>`;
   }
 
-  // ── Delete submission ──
-  async function deleteSubmission(id, token, card, animate = true) {
+  // ── Delete Netlify submission ──
+  async function deleteSubmission(id, token, card, toastMsg) {
     try {
       await fetch(`https://api.netlify.com/api/v1/submissions/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
     } catch (_) {}
-    if (animate) {
-      card.classList.add('dismissed');
-      setTimeout(() => card.remove(), 350);
-    } else {
-      card.classList.add('dismissed');
-      setTimeout(() => card.remove(), 350);
-    }
+    card.classList.add('dismissed');
+    setTimeout(() => card.remove(), 350);
+    if (toastMsg) showToast(toastMsg);
+  }
+
+  // ── Base64 helpers (UTF-8 safe) ──
+  function toBase64(str) {
+    const bytes = new TextEncoder().encode(str);
+    let bin = '';
+    bytes.forEach(b => bin += String.fromCharCode(b));
+    return btoa(bin);
+  }
+  function fromBase64(b64) {
+    const bin   = atob(b64);
+    const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
   }
 
   function esc(str) {
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 </script>
 </body>
