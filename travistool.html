@@ -310,7 +310,7 @@
     const name = d['business-name'] || '(no name)';
     const why  = d.why || '';
     const cat  = d.category || '';
-    const url  = d.url || '';
+    const url  = d['business-url'] || d.url || '';
     const date = new Date(sub.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const isSupport = type === 'support';
 
