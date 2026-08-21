@@ -291,7 +291,7 @@
       });
       if (!res.ok) throw new Error(`Netlify API ${res.status}: ${res.statusText}`);
       const all  = await res.json();
-      const subs = all.filter(s => s.form_name === 'suggest');
+      const subs = all.filter(s => s.form_name === 'suggest-v2' || s.form_name === 'suggest');
       statusEl.textContent = subs.length
         ? `${subs.length} pending submission${subs.length !== 1 ? 's' : ''}`
         : '';
