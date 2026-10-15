@@ -17,7 +17,7 @@ export async function onRequestPost({ request, env }) {
   const repo  = env.GITHUB_REPO;
 
   if (!token || !repo) {
-    return json({ error: 'GITHUB_TOKEN and GITHUB_REPO must be set in Cloudflare Pages settings' }, 500);
+    return json({ error: 'GITHUB_TOKEN and GITHUB_REPO must be set in the Cloudflare Worker settings' }, 500);
   }
 
   const apiUrl = `https://api.github.com/repos/${repo}/contents/index.html`;
