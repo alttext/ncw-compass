@@ -1,11 +1,12 @@
 // Protects the admin page and admin API with Cloudflare Access.
 // Cloudflare Access blocks unauthenticated visitors at the edge on ncwcompass.com;
 // this middleware also verifies the Access JWT so the same paths stay locked on
-// *.pages.dev preview URLs or if the Access policy is ever misconfigured.
+// workers.dev / preview URLs or if the Access policy is ever misconfigured.
 //
-// Required environment variables (Pages → Settings → Variables and Secrets):
+// Required environment variables (Worker → Settings → Variables and Secrets):
 //   ACCESS_TEAM_DOMAIN  e.g. "yourteam.cloudflareaccess.com"
-//   ACCESS_AUD          the Application Audience (AUD) tag of the Access application
+//   ACCESS_AUD          Audience (AUD) tag(s) of the Access application(s), comma-separated
+//                       (e.g. the ncwcompass.com app and the workers.dev / preview-URL app)
 
 const PROTECTED = [/^\/travistool(\.html)?\/?$/i, /^\/api\/admin(\/|$)/i];
 
@@ -80,8 +81,9 @@ async function verifyAccessJwt(token, teamDomain, aud) {
   if (!ok) throw new Error('bad signature');
 
   const now = Math.floor(Date.now() / 1000);
-  const auds = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
-  if (!auds.includes(aud)) throw new Error('aud');
+  const tokenAuds = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
+  const allowed = String(aud).split(',').map((a) => a.trim()).filter(Boolean);
+  if (!tokenAuds.some((a) => allowed.includes(a))) throw new Error('aud');
   if (payload.iss !== `https://${teamDomain}`) throw new Error('iss');
   if (!payload.exp || payload.exp < now) throw new Error('expired');
   return payload;
