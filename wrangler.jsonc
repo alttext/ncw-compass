@@ -1,0 +1,22 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ncw-compass",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    // Only these paths hit the Worker; everything else is served straight from static assets.
+    "run_worker_first": ["/api/*", "/travistool*"]
+  },
+  "kv_namespaces": [
+    { "binding": "SUBMISSIONS", "id": "0450d3c08a2a4914a0cd62cc0ae8e0c2" }
+  ],
+  "vars": {
+    "GITHUB_REPO": "alttext/ncw-compass"
+  },
+  // Keep ACCESS_TEAM_DOMAIN / ACCESS_AUD set in the dashboard across deploys.
+  // (GITHUB_TOKEN is a secret, and secrets always persist.)
+  "keep_vars": true,
+  "observability": { "enabled": true }
+}

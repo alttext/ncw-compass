@@ -1,0 +1,13 @@
+# Never publish these as static files
+.git
+.git/**
+.github
+.wrangler
+node_modules
+worker
+functions
+netlify
+wrangler.jsonc
+.assetsignore
+.gitignore
+*.md
