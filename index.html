@@ -250,8 +250,9 @@
       <h2 id="modal-title">Suggest a Business</h2>
       <button class="modal-close" id="modal-close" aria-label="Close">×</button>
     </div>
-    <form id="suggest-form" method="POST" name="suggest-v2" data-netlify="true">
-      <input type="hidden" name="form-name" value="suggest-v2">
+    <form id="suggest-form" method="POST" action="/api/suggest">
+      <!-- Honeypot: real people never see or fill this -->
+      <p style="position:absolute;left:-9999px" aria-hidden="true"><label>Leave this empty <input type="text" name="company-website" tabindex="-1" autocomplete="off"></label></p>
       <div class="form-group">
         <label>Type of suggestion</label>
         <div class="radio-group">
@@ -637,13 +638,19 @@
     e.preventDefault();
     const formData = new FormData(form);
     if (catSelect.value === 'new') formData.set('category', newCatInp.value.trim());
-    fetch('/', {
+    const submitBtn = form.querySelector('.btn-submit');
+    submitBtn.disabled = true;
+    fetch('/api/suggest', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams(formData).toString()
     })
-      .then(() => { form.style.display = 'none'; successEl.style.display = 'flex'; })
-      .catch(() => { alert('Something went wrong — please try again.'); });
+      .then(res => {
+        if (!res.ok) throw new Error(res.status);
+        form.style.display = 'none'; successEl.style.display = 'flex';
+      })
+      .catch(() => { alert('Something went wrong — please try again.'); })
+      .finally(() => { submitBtn.disabled = false; });
   });
 
   // Sortable headers

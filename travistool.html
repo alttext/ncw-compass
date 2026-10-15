@@ -212,27 +212,13 @@
 
   <div class="setup-panel">
     <div class="setup-section">
-      <span class="setup-label">Netlify — load submissions</span>
+      <span class="setup-label">Pending suggestions</span>
       <div class="setup-fields">
-        <input type="password" id="netlify-token" placeholder="Personal Access Token" autocomplete="off">
-        <input type="text"     id="site-id"       placeholder="Site ID">
         <button class="btn-load" id="load-btn">Load Submissions</button>
       </div>
       <p class="setup-hint">
-        <a href="https://app.netlify.com/user/applications#personal-access-tokens" target="_blank">Get Netlify token</a> ·
-        Site ID is under <strong>Site configuration → General</strong>.
-      </p>
-    </div>
-
-    <hr class="setup-divider">
-
-    <div class="setup-section">
-      <span class="setup-label">GitHub — publish approvals</span>
-      <p class="setup-hint">
-        Approvals commit directly to GitHub via a server-side function — no token needed here.<br>
-        Set <strong>GITHUB_TOKEN</strong> and <strong>GITHUB_REPO</strong> (e.g. <code>owner/ncw-compass</code>)
-        in <a href="https://app.netlify.com" target="_blank">Netlify → Site configuration → Environment variables</a>,
-        then redeploy once. After that, approvals go live in ~30s automatically.
+        Suggestions are stored in Cloudflare KV. This page is protected by Cloudflare Access;
+        approvals commit to GitHub server-side and go live after the next Cloudflare Pages deploy (~30s).
       </p>
     </div>
   </div>
@@ -253,14 +239,21 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  const NL_TOKEN_KEY = 'ncw_nl_token';
-  const SITE_KEY     = 'ncw_site_id';
-
-  const nlTokenEl = document.getElementById('netlify-token');
-  const siteEl    = document.getElementById('site-id');
-
-  nlTokenEl.value = localStorage.getItem(NL_TOKEN_KEY) || '';
-  siteEl.value    = localStorage.getItem(SITE_KEY)     || '';
+  // Same-origin admin API (protected by Cloudflare Access).
+  async function adminFetch(path, opts = {}) {
+    let res;
+    try {
+      res = await fetch(path, { credentials: 'same-origin', ...opts });
+    } catch (e) {
+      throw new Error(`Network error — your Access session may have expired. Reload the page. (${e.message})`);
+    }
+    if (res.status === 401 || res.status === 403) throw new Error('Not authorized — reload the page to sign in again.');
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `Request failed (${res.status})`);
+    }
+    return res;
+  }
 
   // ── Toast ──
   let toastTimer;
@@ -274,24 +267,14 @@
 
   // ── Load submissions ──
   document.getElementById('load-btn').addEventListener('click', async () => {
-    const token  = nlTokenEl.value.trim();
-    const siteId = siteEl.value.trim();
-    if (!token || !siteId) { showToast('Enter your Netlify token and Site ID.', true); return; }
-    localStorage.setItem(NL_TOKEN_KEY, token);
-    localStorage.setItem(SITE_KEY, siteId);
-
     const statusEl = document.getElementById('status');
     const listEl   = document.getElementById('submissions-list');
     statusEl.textContent = 'Loading…';
     listEl.innerHTML = '';
 
     try {
-      const res  = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}/submissions?per_page=100`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (!res.ok) throw new Error(`Netlify API ${res.status}: ${res.statusText}`);
-      const all  = await res.json();
-      const subs = all.filter(s => s.form_name === 'suggest-v2' || s.form_name === 'suggest');
+      const res  = await adminFetch('/api/admin/submissions');
+      const subs = await res.json();
       statusEl.textContent = subs.length
         ? `${subs.length} pending submission${subs.length !== 1 ? 's' : ''}`
         : '';
@@ -354,10 +337,8 @@
         <button class="btn-approve">✓ Approve &amp; Publish</button>
       </div>`;
 
-    const nlToken = nlTokenEl.value.trim();
-
     card.querySelector('.btn-deny').addEventListener('click', () =>
-      deleteSubmission(sub.id, nlToken, card, 'Submission denied.')
+      deleteSubmission(sub.id, card, 'Submission denied.').catch(err => showToast(err.message, true))
     );
 
     card.querySelector('.btn-approve').addEventListener('click', async () => {
@@ -377,7 +358,7 @@
 
       try {
         await commitToGitHub(snippet, tbody, name);
-        await deleteSubmission(sub.id, nlToken, card, null);
+        await deleteSubmission(sub.id, card, null);
         showToast(`✓ "${name}" published — deploying in ~30s`);
       } catch (err) {
         approveBtn.disabled = false;
@@ -391,22 +372,9 @@
     return card;
   }
 
-  // ── Publish via Netlify Function ──
+  // ── Publish via Cloudflare Pages Function ──
   async function commitToGitHub(snippet, tbody, businessName) {
-    let res;
-    try {
-      res = await fetch('/.netlify/functions/publish', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ snippet, tbody, businessName })
-      });
-    } catch (e) {
-      throw new Error(`Could not reach the publish function — are you on the deployed site? (${e.message})`);
-    }
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || `Publish failed (${res.status})`);
-    }
+    await callPublish({ snippet, tbody, businessName });
   }
 
   // ── Row generators ──
@@ -425,14 +393,9 @@
     return `<tr data-cat="${esc(affil)}"><td>${esc(name)}</td><td>${esc(whyDisplay)}</td><td><span class="tag-cat">${esc(cat)}</span></td></tr>`;
   }
 
-  // ── Delete Netlify submission ──
-  async function deleteSubmission(id, token, card, toastMsg) {
-    try {
-      await fetch(`https://api.netlify.com/api/v1/submissions/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-    } catch (_) {}
+  // ── Delete a stored submission ──
+  async function deleteSubmission(id, card, toastMsg) {
+    await adminFetch(`/api/admin/submissions/${encodeURIComponent(id)}`, { method: 'DELETE' });
     card.classList.add('dismissed');
     setTimeout(() => card.remove(), 350);
     if (toastMsg) showToast(toastMsg);
@@ -452,7 +415,7 @@
     const listEl = document.getElementById('manage-list');
     listEl.innerHTML = '<div class="empty-state">Loading…</div>';
     try {
-      const res = await fetch('/index.html?_=' + Date.now());
+      const res = await fetch('/?_=' + Date.now(), { cache: 'no-store' });
       const html = await res.text();
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
@@ -589,20 +552,11 @@
   }
 
   async function callPublish(payload) {
-    let res;
-    try {
-      res = await fetch('/.netlify/functions/publish', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-    } catch (e) {
-      throw new Error(`Network error: ${e.message}`);
-    }
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || `Failed (${res.status})`);
-    }
+    await adminFetch('/api/admin/publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
   }
 </script>
 </body>
