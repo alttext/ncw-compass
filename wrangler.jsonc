@@ -7,7 +7,7 @@
     "directory": ".",
     "binding": "ASSETS",
     // Only these paths hit the Worker; everything else is served straight from static assets.
-    "run_worker_first": ["/api/*", "/travistool*"]
+    "run_worker_first": ["/api/*", "/travistool*", "/admin*"]
   },
   "kv_namespaces": [
     { "binding": "SUBMISSIONS", "id": "0450d3c08a2a4914a0cd62cc0ae8e0c2" }
