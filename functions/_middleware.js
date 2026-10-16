@@ -8,7 +8,7 @@
 //   ACCESS_AUD          Audience (AUD) tag(s) of the Access application(s), comma-separated
 //                       (e.g. the ncwcompass.com app and the workers.dev / preview-URL app)
 
-const PROTECTED = [/^\/travistool(\.html)?\/?$/i, /^\/api\/admin(\/|$)/i];
+const PROTECTED = [/^\/(travistool|admin)(\.html)?\/?$/i, /^\/api\/admin(\/|$)/i];
 
 export async function onRequest(context) {
   const { request, env, next } = context;
